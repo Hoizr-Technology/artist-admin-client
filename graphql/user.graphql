@@ -1,0 +1,17 @@
+query MeCheckUser {
+  meUser {
+    _id
+    firstName
+    status
+    userType
+    isVerified
+  }
+}
+
+query userSignup($input: UserSignupInput!) {
+  userSignup(input: $input)
+}
+
+query userSignupVerification($input: UserSignupVerificationInput!) {
+  userSignupVerification(input: $input)
+}

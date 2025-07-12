@@ -1,0 +1,7 @@
+query artistLogin($email: String!) {
+  artistLogin(email: $email)
+}
+
+query artistLoginVerification($input: ArtistLoginVerificationInput!) {
+  artistLoginVerification(input: $input)
+}
