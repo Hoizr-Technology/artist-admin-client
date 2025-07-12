@@ -5,3 +5,56 @@ query artistLogin($email: String!) {
 query artistLoginVerification($input: ArtistLoginVerificationInput!) {
   artistLoginVerification(input: $input)
 }
+
+mutation artistLogout {
+  artistLogout
+}
+
+mutation artistOnboarding($input: ArtistOnboardingInput!) {
+  artistOnboarding(input: $input)
+}
+
+query artistOnboardingData {
+  artistOnboardingData {
+    _id
+    user {
+      firstName
+      lastName
+    }
+    artistType
+    stageName
+    genres
+    profilePicture
+    bio
+    address {
+      addressLine1
+      addressLine2
+      city
+      zipcode
+      coordinate {
+        type
+        coordinates
+      }
+      place {
+        placeId
+        displayName
+      }
+    }
+    experience
+    hourRateCurrency
+    hourRate
+    websiteUrl
+    socialLinks {
+      instagram
+      soundcloud
+      spotify
+      youtube
+      mixcloud
+      bandcamp
+    }
+  }
+}
+
+query completeArtistOnboarding {
+  completeArtistOnboarding
+}

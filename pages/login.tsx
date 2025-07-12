@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { FaSpinner } from "react-icons/fa";
-import logo1 from "../assets/logo/logoTextBlack.png";
+import logo1 from "../assets/logo/text.png";
 import AuthScreenSection from "@/components/common/authScreenSection/authScreenSection";
 import CButton from "@/components/common/buttons/button";
 import { ButtonType } from "@/components/common/buttons/interface";
@@ -153,7 +153,7 @@ const Login: FC = () => {
 
   return (
     <>
-      <div className="bg-white">
+      <div className="bg-surface">
         <div className="flex flex-col lg:flex-row min-h-screen">
           {/* Left side - Login Form */}
           <div className="w-full  flex items-center lg:w-5/12 px-6 py-8 lg:mx-auto ">
@@ -162,7 +162,7 @@ const Login: FC = () => {
                 <div className="relative z-10 flex items-center gap-16 justify-center">
                   <Image className="mb-4" src={logo1} alt="Logo" width={200} />
                 </div>
-                <h1 className="mt-3 text-gray-800">
+                <h1 className="mt-3 text-primary">
                   Sign in to access your account
                 </h1>
               </div>
@@ -175,7 +175,7 @@ const Login: FC = () => {
                   <div className="col-span-2">
                     <label
                       htmlFor="email"
-                      className="block mb-2 text-sm font-medium text-black"
+                      className="block mb-2 text-sm font-medium text-foreground"
                     >
                       Email or Mobile Number
                     </label>
@@ -205,7 +205,7 @@ const Login: FC = () => {
                   </div>
                 </form>
 
-                <p className="mt-6 text-sm text-center text-gray-800">
+                <p className="mt-6 text-sm text-center text-primary">
                   {`Don't have an account yet?`}{" "}
                   <Link
                     href="/signup"
@@ -220,12 +220,10 @@ const Login: FC = () => {
           </div>
           <div className="w-full lg:w-7/12">
             <AuthScreenSection
-              title="Built by Restaurant Owners and Marketers"
-              description="Developed by a team of industry veterans, Choose combines over 30 years of experience in restaurant operations, marketing, and growth to empower fellow restaurant owners."
-              imageUrl="/auth-image.webp"
-              backgroundColor="#1c1e27"
-              titleTextColor="text-white"
-              descriptionTextColor="text-gray-400"
+              title="Welcome Back, Stage Ruler"
+              description="Log in to access your bookings, update your profile, and connect with hosts and agencies. GrooveGrid keeps your artist journey organized and always moving forward."
+              imageUrl="https://res.cloudinary.com/duhefgqh4/image/upload/v1748802767/pexels-ulltangfilms-593345_xlqena.jpg"
+              backgroundColor="#dfdf1e"
             />
           </div>
         </div>

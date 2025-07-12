@@ -18,6 +18,32 @@ export type Scalars = {
   DateTimeISO: { input: any; output: any; }
 };
 
+export type AccessHistory = {
+  __typename?: 'AccessHistory';
+  ipAddress: Scalars['String']['output'];
+  location?: Maybe<Scalars['String']['output']>;
+  timestamp: Scalars['DateTimeISO']['output'];
+  userAgent: Scalars['String']['output'];
+};
+
+export type AddConfigInput = {
+  boolVal?: InputMaybe<Scalars['Boolean']['input']>;
+  numVal?: InputMaybe<Scalars['Float']['input']>;
+  textVal?: InputMaybe<Scalars['String']['input']>;
+  type: ConfigTypeEnum;
+  valueType: ConfigValueEnum;
+};
+
+export type AddStateInput = {
+  abbreviation: Scalars['String']['input'];
+  value: Scalars['String']['input'];
+};
+
+export type AddTimezoneInput = {
+  gmtOffset: Scalars['Float']['input'];
+  value: Scalars['String']['input'];
+};
+
 export type AddressInfo = {
   __typename?: 'AddressInfo';
   _id: Scalars['ID']['output'];
@@ -29,11 +55,52 @@ export type AddressInfo = {
   zipcode: Scalars['Float']['output'];
 };
 
+export type AddressInfoInput = {
+  addressLine1: Scalars['String']['input'];
+  addressLine2?: InputMaybe<Scalars['String']['input']>;
+  city: Scalars['String']['input'];
+  coordinate?: InputMaybe<LocationCommonInput>;
+  place?: InputMaybe<PlaceInput>;
+  zipcode: Scalars['Float']['input'];
+};
+
+export type Admin = {
+  __typename?: 'Admin';
+  _id: Scalars['ID']['output'];
+  accessHistory?: Maybe<Array<AccessHistory>>;
+  blockedBy?: Maybe<Admin>;
+  createdAt: Scalars['DateTimeISO']['output'];
+  createdBy?: Maybe<Admin>;
+  email: Scalars['String']['output'];
+  lastLoggedIn?: Maybe<Scalars['DateTimeISO']['output']>;
+  lastLoggedOut?: Maybe<Scalars['DateTimeISO']['output']>;
+  name: Scalars['String']['output'];
+  role: AdminRole;
+  status: AdminStatus;
+  unBlockedBy?: Maybe<Admin>;
+  updatedAt: Scalars['DateTimeISO']['output'];
+  updatedBy?: Maybe<Admin>;
+};
+
 export type AdminLoginVerificationInput = {
   email: Scalars['String']['input'];
   otp: Scalars['String']['input'];
   otpId: Scalars['String']['input'];
 };
+
+/** Types of Admin Roles */
+export enum AdminRole {
+  Admin = 'ADMIN',
+  Master = 'MASTER',
+  Support = 'SUPPORT'
+}
+
+/** Status types for admin accounts */
+export enum AdminStatus {
+  Active = 'ACTIVE',
+  Blocked = 'BLOCKED',
+  Pending = 'PENDING'
+}
 
 export type AgencyProfile = {
   __typename?: 'AgencyProfile';
@@ -47,7 +114,7 @@ export type AgencyProfile = {
   logoUrl?: Maybe<Scalars['String']['output']>;
   serviceTypes: Array<Scalars['String']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
-  userId: User;
+  user: User;
   websiteUrl?: Maybe<Scalars['String']['output']>;
 };
 
@@ -75,7 +142,7 @@ export type Artist = {
   status?: Maybe<ArtistStatus>;
   testimonials?: Maybe<Array<Testimonial>>;
   updatedAt?: Maybe<Scalars['DateTimeISO']['output']>;
-  userId?: Maybe<User>;
+  user?: Maybe<User>;
   websiteUrl?: Maybe<Scalars['String']['output']>;
 };
 
@@ -83,6 +150,23 @@ export type ArtistLoginVerificationInput = {
   email: Scalars['String']['input'];
   otp: Scalars['String']['input'];
   otpId: Scalars['String']['input'];
+};
+
+export type ArtistOnboardingInput = {
+  address?: InputMaybe<AddressInfoInput>;
+  artistType?: InputMaybe<ArtistType>;
+  bio?: InputMaybe<Scalars['String']['input']>;
+  experience?: InputMaybe<ExperienceLevel>;
+  genres?: InputMaybe<Array<MusicGenre>>;
+  hourRate?: InputMaybe<Scalars['Float']['input']>;
+  hourRateCurrency?: InputMaybe<Currency>;
+  isDiscoverable?: InputMaybe<Scalars['Boolean']['input']>;
+  portfolio?: InputMaybe<Array<ArtistPortfolioInput>>;
+  profilePicture?: InputMaybe<Scalars['String']['input']>;
+  socialLinks?: InputMaybe<SocialLinksInput>;
+  stageName?: InputMaybe<Scalars['String']['input']>;
+  testimonials?: InputMaybe<Array<TestimonialInput>>;
+  websiteUrl?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ArtistPaginatedResponse = {
@@ -99,6 +183,13 @@ export type ArtistPortfolio = {
   type: PortfolioType;
   uploadedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   url: Scalars['String']['output'];
+};
+
+export type ArtistPortfolioInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  title: Scalars['String']['input'];
+  type: PortfolioType;
+  url: Scalars['String']['input'];
 };
 
 /** ArtistStatus type enum  */
@@ -127,6 +218,34 @@ export type BlockUnblockArtistInput = {
   artistId: Scalars['ID']['input'];
   block: Scalars['Boolean']['input'];
 };
+
+export type Config = {
+  __typename?: 'Config';
+  _id: Scalars['ID']['output'];
+  boolVal?: Maybe<Scalars['Boolean']['output']>;
+  createdAt: Scalars['DateTimeISO']['output'];
+  createdBy: Admin;
+  numVal?: Maybe<Scalars['Float']['output']>;
+  textVal?: Maybe<Scalars['String']['output']>;
+  type: ConfigTypeEnum;
+  updatedAt: Scalars['DateTimeISO']['output'];
+  updatedBy: Admin;
+  valueType: ConfigValueEnum;
+};
+
+/** Enum to store the types of master config that can be changed by admins anytime */
+export enum ConfigTypeEnum {
+  MaxCsvRows = 'MaxCSVRows',
+  MonthlySubscription = 'MonthlySubscription',
+  ProcessingFee = 'ProcessingFee'
+}
+
+/** Enum to store the types of Config Values */
+export enum ConfigValueEnum {
+  Boolean = 'BOOLEAN',
+  Number = 'NUMBER',
+  Text = 'TEXT'
+}
 
 export type ContactDetails = {
   __typename?: 'ContactDetails';
@@ -183,6 +302,10 @@ export type LocationCommon = {
   type?: Maybe<Scalars['String']['output']>;
 };
 
+export type LocationCommonInput = {
+  coordinates: Array<Scalars['Float']['input']>;
+};
+
 /** Various genres of music available for artist or event selection */
 export enum MusicGenre {
   Disco = 'DISCO',
@@ -204,11 +327,38 @@ export enum MusicGenre {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addConfig: Scalars['Boolean']['output'];
+  addState: Scalars['Boolean']['output'];
+  addTimezone: Scalars['Boolean']['output'];
   adminLogout: Scalars['Boolean']['output'];
   artistLogout: Scalars['Boolean']['output'];
+  artistOnboarding: Scalars['Boolean']['output'];
   blockUnblockArtist: Scalars['Boolean']['output'];
   rejectArtist: Scalars['Boolean']['output'];
+  updateConfig: Scalars['Boolean']['output'];
+  updateStateStatus: Scalars['Boolean']['output'];
+  updateTimezoneStatus: Scalars['Boolean']['output'];
   verifyArtist: Scalars['Boolean']['output'];
+};
+
+
+export type MutationAddConfigArgs = {
+  input: AddConfigInput;
+};
+
+
+export type MutationAddStateArgs = {
+  input: AddStateInput;
+};
+
+
+export type MutationAddTimezoneArgs = {
+  input: AddTimezoneInput;
+};
+
+
+export type MutationArtistOnboardingArgs = {
+  input: ArtistOnboardingInput;
 };
 
 
@@ -222,6 +372,22 @@ export type MutationRejectArtistArgs = {
 };
 
 
+export type MutationUpdateConfigArgs = {
+  id: Scalars['String']['input'];
+  input: UpdateConfigInput;
+};
+
+
+export type MutationUpdateStateStatusArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateTimezoneStatusArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationVerifyArtistArgs = {
   input: VerifyArtistInput;
 };
@@ -229,6 +395,11 @@ export type MutationVerifyArtistArgs = {
 export type PaginationInput = {
   pageNumber?: InputMaybe<Scalars['Float']['input']>;
   rowsPerPage?: InputMaybe<RowsPerPageEnum>;
+};
+
+export type PlaceInput = {
+  displayName: Scalars['String']['input'];
+  placeId: Scalars['String']['input'];
 };
 
 export type Places = {
@@ -253,6 +424,14 @@ export type Query = {
   allArtists: ArtistPaginatedResponse;
   artistLogin: Scalars['String']['output'];
   artistLoginVerification: Scalars['Boolean']['output'];
+  artistOnboardingData?: Maybe<Artist>;
+  completeArtistOnboarding: Scalars['Boolean']['output'];
+  getActiveStates: Array<State>;
+  getActiveTimezones: Array<Timezone>;
+  getAllConfigs: Array<Config>;
+  getAllStates: Array<State>;
+  getAllTimezones: Array<Timezone>;
+  getConfig: Config;
   meContactDetails?: Maybe<ContactDetails>;
   meUser?: Maybe<User>;
   userSignup: Scalars['String']['output'];
@@ -287,6 +466,11 @@ export type QueryArtistLoginVerificationArgs = {
 };
 
 
+export type QueryGetConfigArgs = {
+  type: ConfigTypeEnum;
+};
+
+
 export type QueryUserSignupArgs = {
   input: UserSignupInput;
 };
@@ -318,6 +502,15 @@ export type SocialLinks = {
   youtube?: Maybe<Scalars['String']['output']>;
 };
 
+export type SocialLinksInput = {
+  bandcamp?: InputMaybe<Scalars['String']['input']>;
+  instagram?: InputMaybe<Scalars['String']['input']>;
+  mixcloud?: InputMaybe<Scalars['String']['input']>;
+  soundcloud?: InputMaybe<Scalars['String']['input']>;
+  spotify?: InputMaybe<Scalars['String']['input']>;
+  youtube?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** Enum to store the types of sorting options data filtering */
 export enum SortDataEnum {
   Asc = 'Asc',
@@ -330,6 +523,18 @@ export type SortDataInput = {
   sortType?: InputMaybe<SortDataEnum>;
 };
 
+export type State = {
+  __typename?: 'State';
+  _id: Scalars['ID']['output'];
+  abbreviation?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTimeISO']['output'];
+  createdBy: Admin;
+  status: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  updatedBy: Admin;
+  value: Scalars['String']['output'];
+};
+
 export type Testimonial = {
   __typename?: 'Testimonial';
   _id?: Maybe<Scalars['ID']['output']>;
@@ -339,6 +544,33 @@ export type Testimonial = {
   profileImage?: Maybe<Scalars['String']['output']>;
   rating?: Maybe<Scalars['Float']['output']>;
   role?: Maybe<Scalars['String']['output']>;
+};
+
+export type TestimonialInput = {
+  content: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  profileImage?: InputMaybe<Scalars['String']['input']>;
+  rating?: InputMaybe<Scalars['Float']['input']>;
+  role?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Timezone = {
+  __typename?: 'Timezone';
+  _id: Scalars['ID']['output'];
+  createdAt: Scalars['DateTimeISO']['output'];
+  createdBy: Admin;
+  gmtOffset: Scalars['Float']['output'];
+  status: Scalars['Boolean']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+  updatedBy: Admin;
+  value: Scalars['String']['output'];
+};
+
+export type UpdateConfigInput = {
+  boolVal?: InputMaybe<Scalars['Boolean']['input']>;
+  numVal?: InputMaybe<Scalars['Float']['input']>;
+  textVal?: InputMaybe<Scalars['String']['input']>;
+  valueType: ConfigValueEnum;
 };
 
 export type User = {
@@ -409,6 +641,33 @@ export type ArtistLoginVerificationQueryVariables = Exact<{
 
 export type ArtistLoginVerificationQuery = { __typename?: 'Query', artistLoginVerification: boolean };
 
+export type ArtistLogoutMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArtistLogoutMutation = { __typename?: 'Mutation', artistLogout: boolean };
+
+export type ArtistOnboardingMutationVariables = Exact<{
+  input: ArtistOnboardingInput;
+}>;
+
+
+export type ArtistOnboardingMutation = { __typename?: 'Mutation', artistOnboarding: boolean };
+
+export type ArtistOnboardingDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ArtistOnboardingDataQuery = { __typename?: 'Query', artistOnboardingData?: { __typename?: 'Artist', _id?: string | null, artistType?: ArtistType | null, stageName?: string | null, genres?: Array<MusicGenre> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } | null };
+
+export type CompleteArtistOnboardingQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type CompleteArtistOnboardingQuery = { __typename?: 'Query', completeArtistOnboarding: boolean };
+
+export type GetActiveStatesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetActiveStatesQuery = { __typename?: 'Query', getActiveStates: Array<{ __typename?: 'State', value: string, abbreviation?: string | null, _id: string }> };
+
 export type MeCheckUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -437,6 +696,72 @@ export const ArtistLoginDocument = gql`
 export const ArtistLoginVerificationDocument = gql`
     query artistLoginVerification($input: ArtistLoginVerificationInput!) {
   artistLoginVerification(input: $input)
+}
+    `;
+export const ArtistLogoutDocument = gql`
+    mutation artistLogout {
+  artistLogout
+}
+    `;
+export const ArtistOnboardingDocument = gql`
+    mutation artistOnboarding($input: ArtistOnboardingInput!) {
+  artistOnboarding(input: $input)
+}
+    `;
+export const ArtistOnboardingDataDocument = gql`
+    query artistOnboardingData {
+  artistOnboardingData {
+    _id
+    user {
+      firstName
+      lastName
+    }
+    artistType
+    stageName
+    genres
+    profilePicture
+    bio
+    address {
+      addressLine1
+      addressLine2
+      city
+      zipcode
+      coordinate {
+        type
+        coordinates
+      }
+      place {
+        placeId
+        displayName
+      }
+    }
+    experience
+    hourRateCurrency
+    hourRate
+    websiteUrl
+    socialLinks {
+      instagram
+      soundcloud
+      spotify
+      youtube
+      mixcloud
+      bandcamp
+    }
+  }
+}
+    `;
+export const CompleteArtistOnboardingDocument = gql`
+    query completeArtistOnboarding {
+  completeArtistOnboarding
+}
+    `;
+export const GetActiveStatesDocument = gql`
+    query getActiveStates {
+  getActiveStates {
+    value
+    abbreviation
+    _id
+  }
 }
     `;
 export const MeCheckUserDocument = gql`
@@ -473,6 +798,21 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     artistLoginVerification(variables: ArtistLoginVerificationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ArtistLoginVerificationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<ArtistLoginVerificationQuery>({ document: ArtistLoginVerificationDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'artistLoginVerification', 'query', variables);
+    },
+    artistLogout(variables?: ArtistLogoutMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ArtistLogoutMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ArtistLogoutMutation>({ document: ArtistLogoutDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'artistLogout', 'mutation', variables);
+    },
+    artistOnboarding(variables: ArtistOnboardingMutationVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ArtistOnboardingMutation> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ArtistOnboardingMutation>({ document: ArtistOnboardingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'artistOnboarding', 'mutation', variables);
+    },
+    artistOnboardingData(variables?: ArtistOnboardingDataQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<ArtistOnboardingDataQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<ArtistOnboardingDataQuery>({ document: ArtistOnboardingDataDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'artistOnboardingData', 'query', variables);
+    },
+    completeArtistOnboarding(variables?: CompleteArtistOnboardingQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CompleteArtistOnboardingQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<CompleteArtistOnboardingQuery>({ document: CompleteArtistOnboardingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'completeArtistOnboarding', 'query', variables);
+    },
+    getActiveStates(variables?: GetActiveStatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetActiveStatesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<GetActiveStatesQuery>({ document: GetActiveStatesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getActiveStates', 'query', variables);
     },
     MeCheckUser(variables?: MeCheckUserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MeCheckUserQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<MeCheckUserQuery>({ document: MeCheckUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MeCheckUser', 'query', variables);
