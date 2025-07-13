@@ -7,7 +7,6 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { FC, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { FaSpinner } from "react-icons/fa";
 import logo1 from "../assets/logo/text.png";
 import AuthScreenSection from "@/components/common/authScreenSection/authScreenSection";
 import CButton from "@/components/common/buttons/button";
@@ -39,17 +38,10 @@ const Login: FC = () => {
   const [showResendButton, setShowResendButton] = useState<boolean>(false);
   const [otpId, setOTPId] = useState<string>("");
 
-  const [multiAccountLoading, setMultiAccountLoading] = useState(false);
-  const [showMultiAccount, setShowMultiAccount] = useState(false);
-  const [multiAccounts, setMultiAccounts] = useState<
-    { _id: string; businessName: string }[]
-  >([]);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<IFormInput>();
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
@@ -139,15 +131,11 @@ const Login: FC = () => {
       setBtnLoading(false);
       const errorMessage = extractErrorMessage(error);
 
-      if (errorMessage === "multi-account") {
-        setShowMultiAccount(true);
-      } else {
-        setToastData({
-          type: "error",
-          message: errorMessage,
-        });
-        setOtp("");
-      }
+      setToastData({
+        type: "error",
+        message: errorMessage,
+      });
+      setOtp("");
     }
   };
 
