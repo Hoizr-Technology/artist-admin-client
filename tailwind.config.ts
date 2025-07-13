@@ -226,6 +226,69 @@ const config: Config = {
         },
       };
 
+      const textareas = {
+        ".textarea": {
+          padding: ".4rem .5rem",
+          borderRadius: ".375rem",
+          border: "1px solid #3a3a39",
+          backgroundColor: colors.input,
+          fontSize: ".875rem",
+          width: "100%",
+          outline: "none",
+          display: "block",
+          color: colors.foreground,
+          resize: "vertical",
+          fontFamily: "inherit",
+          lineHeight: "1.5",
+          minHeight: "2.5rem",
+          "&::placeholder": {
+            color: "#6b6b6a",
+            opacity: "1",
+            transition: "color 0.3s ease",
+          },
+          "&:focus::placeholder": {
+            color: "#8a8a89",
+          },
+          "&:focus": {
+            outline: "none",
+            borderColor: colors.primary,
+          },
+          "&.textarea-primary": {
+            backgroundColor: colors.input,
+            borderColor: "#3a3a39",
+            "&:focus": {
+              backgroundColor: colors.input,
+              borderColor: colors.primary,
+            },
+            "&:disabled": {
+              backgroundColor: colors.input,
+              opacity: "0.4",
+              borderColor: "#3a3a39",
+            },
+            "&::placeholder": {
+              color: "#6b6b6a",
+              opacity: "0.8",
+              transition: "color 0.3s ease",
+            },
+          },
+          "&.textarea-secondary": {
+            backgroundColor: colors.secondary,
+            "&:focus": {
+              backgroundColor: colors.secondary,
+              borderColor: colors.primary,
+            },
+          },
+          "&.textarea-warning": {
+            backgroundColor: colors.input,
+            borderColor: colors.warning,
+            "&:focus": {
+              backgroundColor: colors.input,
+              borderColor: colors.warning,
+            },
+          },
+        },
+      };
+
       const switches = {
         ".switch": {
           minWidth: "2.1rem",
@@ -298,6 +361,7 @@ const config: Config = {
       addComponents(inputs);
       addComponents(switches);
       addComponents(checkboxes);
+      addComponents(textareas);
     },
   ],
 };

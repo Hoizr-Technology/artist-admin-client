@@ -155,7 +155,7 @@ const Signup: FC = () => {
       if (response && response.userSignupVerification) {
         setShowModal(false);
         setToastData({ message: "Verification Successful", type: "success" });
-        router.replace("/onboarding/user/user-info");
+        router.replace("/onboarding/artist/about-us");
       }
     } catch (error) {
       const errorMessage = extractErrorMessage(error);

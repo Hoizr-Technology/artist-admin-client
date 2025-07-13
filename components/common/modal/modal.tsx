@@ -65,7 +65,7 @@ const ReusableModal: React.FC<ModalProps> = ({
             animate="show"
             exit="hidden"
             className={cn(
-              `rounded shadow-lg bg-white ${widthClasses[width]} max-h-[95vh] overflow-y-auto z-10`,
+              `rounded shadow-lg bg-black ${widthClasses[width]} max-h-[95vh] overflow-y-auto z-10`,
               className
             )}
             onClick={(e) => e.stopPropagation()}
@@ -73,11 +73,13 @@ const ReusableModal: React.FC<ModalProps> = ({
             <div className="py-5 px-6">
               <div className="flex items-start justify-between pb-2 rounded-t">
                 <div className="flex items-center space-x-4">
-                  <h2 className="text-2xl font-bold text-black">{title}</h2>
+                  <h2 className="text-2xl font-bold text-foreground">
+                    {title}
+                  </h2>
                 </div>
                 <button
                   type="button"
-                  className="text-black bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-xl text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-primary dark:hover:text-white"
+                  className="text-black bg-transparent hover:bg-surface hover:text-gray-900 rounded-xl text-sm w-8 h-8 inline-flex justify-center items-center dark:hover:bg-primary dark:hover:text-white"
                   onClick={onClose}
                 >
                   <svg
@@ -88,7 +90,7 @@ const ReusableModal: React.FC<ModalProps> = ({
                     viewBox="0 0 14 14"
                   >
                     <path
-                      stroke="currentColor"
+                      stroke="white"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
@@ -100,7 +102,7 @@ const ReusableModal: React.FC<ModalProps> = ({
               </div>
               {comments && (
                 <p
-                  className="text-sm text-gray-700
+                  className="text-sm text-white/80
            mb-4"
                 >
                   {comments}
