@@ -337,6 +337,7 @@ export type Mutation = {
   artistOnboarding: Scalars['Boolean']['output'];
   blockUnblockArtist: Scalars['Boolean']['output'];
   rejectArtist: Scalars['Boolean']['output'];
+  tokensRefresh: Scalars['Boolean']['output'];
   updateConfig: Scalars['Boolean']['output'];
   updateStateStatus: Scalars['Boolean']['output'];
   updateTimezoneStatus: Scalars['Boolean']['output'];
@@ -722,6 +723,11 @@ export type UserSignupVerificationQueryVariables = Exact<{
 
 export type UserSignupVerificationQuery = { __typename?: 'Query', userSignupVerification: boolean };
 
+export type MeUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeUserQuery = { __typename?: 'Query', meUser?: { __typename?: 'User', _id: string, firstName: string, lastName: string, status: UserStatus, email: string, phoneNumber: string, userType: UserType, profileId: string, isVerified: boolean, authType: AuthType } | null };
+
 export type AllPlacesQueryVariables = Exact<{
   input: Scalars['String']['input'];
 }>;
@@ -838,6 +844,23 @@ export const UserSignupVerificationDocument = gql`
   userSignupVerification(input: $input)
 }
     `;
+export const MeUserDocument = gql`
+    query MeUser {
+  meUser {
+    _id
+    firstName
+    lastName
+    status
+    email
+    phoneNumber
+    userType
+    profileId
+    isVerified
+    authType
+    status
+  }
+}
+    `;
 export const AllPlacesDocument = gql`
     query AllPlaces($input: String!) {
   getPlacesList(input: $input) {
@@ -895,6 +918,9 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     userSignupVerification(variables: UserSignupVerificationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserSignupVerificationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserSignupVerificationQuery>({ document: UserSignupVerificationDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'userSignupVerification', 'query', variables);
+    },
+    MeUser(variables?: MeUserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MeUserQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MeUserQuery>({ document: MeUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MeUser', 'query', variables);
     },
     AllPlaces(variables: AllPlacesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<AllPlacesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<AllPlacesQuery>({ document: AllPlacesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'AllPlaces', 'query', variables);
