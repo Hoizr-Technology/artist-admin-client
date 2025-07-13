@@ -13,9 +13,6 @@ import { sdk } from "@/utils/graphqlClient";
 import { LogOutIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { MdCopyAll } from "react-icons/md";
-import ReusableModal from "../common/modal/modal";
 import { SidebarTrigger, useSidebar } from "../ui/sidebar";
 import useAuthStore from "@/store/authStore";
 import { extractErrorMessage } from "@/utils/functions/common";
@@ -24,13 +21,7 @@ const Navbar = () => {
   const router = useRouter();
   const { firstName, lastName } = useAuthStore();
   const { meUser } = useUserStore();
-  const { setToastData } = useGlobalStore();
-
-  const [confirmationOpen, setConfirmationOpen] = useState(false);
-  const [actionLoading, setActionLoading] = useState(false);
-  const [onlineWebsiteLink, setOnlineWebsiteLink] = useState<string | null>(
-    null
-  );
+  const { setToastData, selectedSideBarMenu } = useGlobalStore();
 
   const handleLogout = async () => {
     try {
@@ -51,18 +42,19 @@ const Navbar = () => {
 
   return (
     // bg-[#F3F7FB]
-    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between  bg-[#ffffff] shadow-sm transition-all duration-200">
+    <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center justify-between  bg-background shadow-sm transition-all duration-200">
       {/* Left Section */}
       <div className="flex items-center gap-2 px-4">
         <SidebarTrigger />
-        <div className="hidden md:block font-semibold">{"aesrjbkf"}</div>
+        <div className="hidden md:block font-semibold">
+          {selectedSideBarMenu}
+        </div>
       </div>
 
       {/* Right Section - Account Management */}
       <div className="flex items-center gap-4 px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild id="nav-account-management">
-            {/* <button className="hover:bg-white/10 flex items-center p-2 rounded-xl transition-colors outline-none"> */}
             <button className="hover:bg-secondary flex items-center p-2 rounded-xl transition-colors outline-none">
               <Avatar
                 className={`h-8 w-8 rounded-xl bg-greenNeon ${

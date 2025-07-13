@@ -168,7 +168,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       <AppSidebar />
 
       <div
-        className={`flex flex-col w-full bg-background !overflow-x-hidden h-screen`}
+        className={`flex flex-col w-full bg-surface !overflow-x-hidden h-screen`}
       >
         <Navbar />
         <div className="w-full flex-1 px-4 lg:px-6 my-2 lg:my-4">

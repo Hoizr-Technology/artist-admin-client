@@ -26,9 +26,7 @@ export type TSidebarItem = {
   subItems?: TSidebarSubItem[];
 };
 
-export const getSidebarList = (
-  manageSubscriptionLink: string
-): TSidebarItem[] => [
+export const getSidebarList = (): TSidebarItem[] => [
   {
     title: "Dashboard",
     href: "/dashboard",
@@ -36,125 +34,44 @@ export const getSidebarList = (
     active: true,
   },
   {
-    title: "Menu Management",
-    href: "/menu/menu-builder/menu",
+    title: "Explore",
+    href: "/explore",
     icon: MenuSquareIcon,
     active: true,
   },
   {
-    title: "POS Integrations",
-    href: "/aggregator",
+    title: "Bookings",
+    href: "/bookings",
     icon: BlocksIcon,
     active: true,
   },
   {
-    title: "Marketing",
-    href: "",
+    title: "Messages",
+    href: "/Messages",
     icon: BookHeartIcon,
     active: true,
-    subItems: [
-      {
-        title: "Campaigns",
-        href: "/campaigns/custom-campaigns",
-      },
-      {
-        title: "Rewards & Loyalty",
-        href: "/rewards",
-      },
-      {
-        title: "Offers",
-        href: "/marketing/coupon",
-      },
-    ],
   },
   {
-    title: "Orders",
-    href: "/order",
+    title: "Contracts",
+    href: "/contracts",
     icon: BoxIcon,
     active: true,
   },
   {
-    title: "Customers",
-    href: "",
+    title: "Payments",
+    href: "/payments",
     icon: CircleUserRoundIcon,
     active: true,
-    subItems: [
-      {
-        title: "Guests",
-        href: "/guests",
-      },
-      {
-        title: "Registered",
-        href: "/customer",
-      },
-    ],
   },
   {
-    title: "Teams",
-    href: "/teams",
+    title: "Agency Management",
+    href: "/agency-management",
     icon: UsersRoundIcon,
     active: true,
   },
   {
-    title: "Payments",
-    href: "",
-    icon: CircleDollarSignIcon,
-    active: true,
-    subItems: [
-      {
-        title: "Invoices",
-        href: "/payment/invoices",
-      },
-      {
-        title: "Integrations",
-        href: "/payment/stripe-integration",
-      },
-      {
-        title: "Payouts",
-        href: "/payment/payouts",
-      },
-      {
-        title: "Manage Subscription",
-        href: manageSubscriptionLink || "/payment/subscription",
-      },
-    ],
-  },
-  {
-    title: "Reports",
-    href: "/reports",
-    icon: FileChartLineIcon,
-    active: true,
-  },
-  {
-    title: "Website Builder",
-    href: "/cms",
-    icon: MonitorIcon,
-    active: true,
-  },
-  // {
-  //   title: "Inventory Management",
-  //   href: "/inventory",
-  //   icon: LayersIcon,
-  //   access: null,
-  //   active: false,
-  // },
-  // {
-  //   title: "Table Reservation",
-  //   href: "/reservation",
-  //   icon: CalendarCheckIcon,
-  //   access: null,
-  //   active: false,
-  // },
-  // {
-  //   title: "Catering",
-  //   href: "/catering",
-  //   icon: CookingPotIcon,
-  //   access: null,
-  //   active: false,
-  // },
-  {
     title: "Settings",
-    href: "/restaurant-settings",
+    href: "/artist-settings",
     icon: SettingsIcon,
     active: true,
   },

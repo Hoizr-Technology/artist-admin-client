@@ -39,6 +39,8 @@ import {
 import { getSidebarList } from "./common/sidebar-data";
 import useAuthStore from "@/store/authStore";
 import { extractErrorMessage } from "@/utils/functions/common";
+import logo1 from "../../assets/logo/text.png";
+import Image from "next/image";
 
 export default function AppSidebar() {
   const { firstName, lastName } = useAuthStore();
@@ -48,8 +50,7 @@ export default function AppSidebar() {
   // const permissions = meUser?.permissions || [];
 
   const router = useRouter();
-  const { selectedSideBarMenu, setSelectedSideBarMenu, setToastData } =
-    useGlobalStore();
+  const { setSelectedSideBarMenu, setToastData } = useGlobalStore();
 
   const handleLogout = async () => {
     try {
@@ -73,22 +74,19 @@ export default function AppSidebar() {
     <Sidebar
       id="app-sidebar"
       collapsible="icon"
-      className="bg-[#F3F7FB] text-black"
+      className="bg-background text-white"
     >
-      <SidebarHeader>
-        <SidebarMenu id="app-sidebar-add-restaurant">
+      <SidebarHeader className="bg-background">
+        <SidebarMenu id="">
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   size="lg"
-                  className="hover:!bg-secondaryBg p-2 flex items-center justify-between"
+                  className="hover:!bg-secondaryBg flex items-center justify-between"
                 >
-                  <div className="flex aspect-square size-7 items-center justify-center rounded-xl bg-greenNeon text-white">
-                    <ImLocation size={18} />
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold">{"Artist"}</span>
+                  <div className="flex w-full h-full items-center justify-center">
+                    <Image className="" src={logo1} alt="Logo" width={100} />
                   </div>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -97,8 +95,103 @@ export default function AppSidebar() {
         </SidebarMenu>
       </SidebarHeader>
       <hr />
-
-      <SidebarFooter className="border-t p-4">
+      <SidebarContent className="bg-background">
+        <SidebarGroup>
+          <SidebarMenu>
+            {getSidebarList().map((sidebarItem) => {
+              if ((sidebarItem.subItems ?? []).length > 0) {
+                return (
+                  <Collapsible
+                    key={sidebarItem.title}
+                    asChild
+                    defaultOpen={false}
+                    className="group/collapsible"
+                  >
+                    <SidebarMenuItem>
+                      <CollapsibleTrigger asChild>
+                        <SidebarMenuButton
+                          tooltip={sidebarItem.title}
+                          className="hover:!bg-secondaryBg !rounded-xl py-5 my-[1px"
+                          onClick={() => {
+                            if (state === "collapsed") {
+                              toggleSidebar();
+                            }
+                          }}
+                        >
+                          {sidebarItem.icon && <sidebarItem.icon />}
+                          <span>{sidebarItem.title}</span>
+                          <ChevronRightIcon className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                        </SidebarMenuButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub>
+                          {(sidebarItem.subItems ?? []).map((subItem) => {
+                            return (
+                              <SidebarMenuSubItem key={subItem.title}>
+                                <SidebarMenuSubButton
+                                  onClick={() => {
+                                    if (isMobile) {
+                                      toggleSidebar();
+                                    }
+                                    setSelectedSideBarMenu(subItem.title);
+                                    router.push(subItem.href);
+                                  }}
+                                  className="cursor-pointer"
+                                >
+                                  <span>{subItem.title}</span>
+                                </SidebarMenuSubButton>
+                              </SidebarMenuSubItem>
+                            );
+                          })}
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuItem>
+                  </Collapsible>
+                );
+              }
+              return (
+                <SidebarMenuItem
+                  key={sidebarItem.title}
+                  className={`hover:bg-secondaryBg rounded-xl my-[1px] ${
+                    sidebarItem.title === "Menu Management"
+                      ? router.pathname.includes("/menu/menu-builder")
+                        ? "text-primary !bg-secondaryBg "
+                        : ""
+                      : sidebarItem.title === "Reports" &&
+                        router.pathname.includes("Reports")
+                      ? "text-primary !bg-secondaryBg "
+                      : router.pathname === sidebarItem.href
+                      ? "text-primary !bg-secondaryBg "
+                      : ""
+                  }`}
+                >
+                  <SidebarMenuButton
+                    tooltip={sidebarItem.title}
+                    onClick={() => {
+                      if (sidebarItem.active) {
+                        if (isMobile || sidebarItem.title === "CMS") {
+                          if (state === "expanded") {
+                            toggleSidebar();
+                          }
+                        }
+                        setSelectedSideBarMenu(sidebarItem.title);
+                        router.push(sidebarItem.href);
+                      }
+                    }}
+                    className="py-5"
+                  >
+                    <>
+                      {sidebarItem.icon && <sidebarItem.icon />}
+                      <span>{sidebarItem.title}</span>
+                    </>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+      <SidebarFooter className="border-t p-4 bg-background">
         <Link
           href={"/knowledge-base/overview"}
           className={`flex flex-row justify-center items-center group space-x-2`}
