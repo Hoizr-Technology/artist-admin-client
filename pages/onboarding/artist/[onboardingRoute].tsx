@@ -1,12 +1,15 @@
 import OnboardingLayout from "@/components/layouts/onboarding.layout";
-import ArtistBasicInfo from "@/components/onboarding/ArtistBasicInfo";
-import ArtistTypeSelection from "@/components/onboarding/ArtistTypeSelection";
-import OnboardingAboutUs from "@/components/onboarding/onboardingAboutUs";
+import ArtistBasicInfo from "@/components/onboarding/artistBasicInfo.onboarding";
+import ArtistTypeSelection from "@/components/onboarding/artistTypeSelection.onboarding";
+import OnboardingAboutUs from "@/components/onboarding/artistAboutUs.onboarding";
 import useOnboardingStore from "@/store/onboarding";
 
 import { sdk } from "@/utils/graphqlClient";
 import { GetServerSideProps } from "next";
 import { useEffect } from "react";
+import ArtistGenres from "@/components/onboarding/artistGenreSelection.onboarding";
+import ArtistLocation from "@/components/onboarding/artistLocation.onboarding";
+import ArtistExperience from "@/components/onboarding/artistExp.onboarding";
 
 type HomePageProps = {
   repo: {
@@ -42,6 +45,7 @@ const OnboardingPage = ({ repo }: HomePageProps) => {
     setCity,
     setCords,
     setPlace,
+    setState,
     setZipcode,
     // Step 6
     setExperience,
@@ -82,6 +86,7 @@ const OnboardingPage = ({ repo }: HomePageProps) => {
           }
         : null
     );
+    setState(repo.address?.state ?? { stateId: "", stateName: "" });
 
     // Step 6 - Experience & Rates
     setExperience(repo.experience || "");
@@ -132,6 +137,15 @@ const OnboardingPage = ({ repo }: HomePageProps) => {
       break;
     case "profile-setup":
       childComponent = <ArtistBasicInfo />;
+      break;
+    case "genres":
+      childComponent = <ArtistGenres />;
+      break;
+    case "location":
+      childComponent = <ArtistLocation />;
+      break;
+    case "experience-rates":
+      childComponent = <ArtistExperience />;
       break;
 
     //   break;

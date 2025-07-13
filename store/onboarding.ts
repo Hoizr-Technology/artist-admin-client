@@ -28,6 +28,8 @@ type OnboardingStates = {
   setCity: (city: string) => void;
   zipcode: string;
   setZipcode: (zipcode: string) => void;
+  state: { id: string; value: string } | null;
+  setState: (state: { id: string; value: string } | null) => void;
   place: { displayName: string; placeId: string } | null;
   setPlace: (place: { displayName: string; placeId: string } | null) => void;
   cords: [number, number];
@@ -88,8 +90,11 @@ const useOnboardingStore = create<OnboardingStates>((set) => ({
   setAddressLine2: (address) => set({ addressLine2: address }),
   city: "",
   setCity: (city) => set({ city }),
+  state: null,
+  setState: (state) => set({ state }),
   zipcode: "",
   setZipcode: (zipcode) => set({ zipcode }),
+
   place: null,
   setPlace: (place) => set({ place }),
   cords: [0, 0],

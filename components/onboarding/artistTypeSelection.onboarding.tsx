@@ -94,9 +94,9 @@ const ArtistTypeSelection = () => {
       exit="hidden"
       transition={{ duration: 0.3, type: "spring" }}
     >
-      <h2 className="text-3xl font-medium text-white">
-        What type of artist are you?
-      </h2>
+      <h1 className="text-3xl text-primary sm:text-4xl font-bold leading-tight mb-6">
+        What Type of Artist are You?
+      </h1>
       <div className="w-full  rounded-xl shadow-sm p-6 bg-surface ">
         <div className="space-y-6 p-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

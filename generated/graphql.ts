@@ -52,6 +52,7 @@ export type AddressInfo = {
   city: Scalars['String']['output'];
   coordinate?: Maybe<LocationCommon>;
   place?: Maybe<Places>;
+  state: StateData;
   zipcode: Scalars['Float']['output'];
 };
 
@@ -61,6 +62,7 @@ export type AddressInfoInput = {
   city: Scalars['String']['input'];
   coordinate?: InputMaybe<LocationCommonInput>;
   place?: InputMaybe<PlaceInput>;
+  state: StateDataInput;
   zipcode: Scalars['Float']['input'];
 };
 
@@ -397,6 +399,16 @@ export type PaginationInput = {
   rowsPerPage?: InputMaybe<RowsPerPageEnum>;
 };
 
+export type PlaceDetail = {
+  __typename?: 'PlaceDetail';
+  address?: Maybe<Scalars['String']['output']>;
+  city?: Maybe<Scalars['String']['output']>;
+  latitude: Scalars['Float']['output'];
+  longitude: Scalars['Float']['output'];
+  state?: Maybe<Scalars['String']['output']>;
+  zipcode?: Maybe<Scalars['String']['output']>;
+};
+
 export type PlaceInput = {
   displayName: Scalars['String']['input'];
   placeId: Scalars['String']['input'];
@@ -432,6 +444,8 @@ export type Query = {
   getAllStates: Array<State>;
   getAllTimezones: Array<Timezone>;
   getConfig: Config;
+  getPlaceDetails?: Maybe<PlaceDetail>;
+  getPlacesList: Array<Places>;
   meContactDetails?: Maybe<ContactDetails>;
   meUser?: Maybe<User>;
   userSignup: Scalars['String']['output'];
@@ -468,6 +482,16 @@ export type QueryArtistLoginVerificationArgs = {
 
 export type QueryGetConfigArgs = {
   type: ConfigTypeEnum;
+};
+
+
+export type QueryGetPlaceDetailsArgs = {
+  placeId: Scalars['String']['input'];
+};
+
+
+export type QueryGetPlacesListArgs = {
+  input: Scalars['String']['input'];
 };
 
 
@@ -533,6 +557,17 @@ export type State = {
   updatedAt: Scalars['DateTimeISO']['output'];
   updatedBy: Admin;
   value: Scalars['String']['output'];
+};
+
+export type StateData = {
+  __typename?: 'StateData';
+  stateId: Scalars['String']['output'];
+  stateName: Scalars['String']['output'];
+};
+
+export type StateDataInput = {
+  stateId?: InputMaybe<Scalars['String']['input']>;
+  stateName: Scalars['String']['input'];
 };
 
 export type Testimonial = {
@@ -656,7 +691,7 @@ export type ArtistOnboardingMutation = { __typename?: 'Mutation', artistOnboardi
 export type ArtistOnboardingDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ArtistOnboardingDataQuery = { __typename?: 'Query', artistOnboardingData?: { __typename?: 'Artist', _id?: string | null, artistType?: ArtistType | null, stageName?: string | null, genres?: Array<MusicGenre> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } | null };
+export type ArtistOnboardingDataQuery = { __typename?: 'Query', artistOnboardingData?: { __typename?: 'Artist', _id?: string | null, artistType?: ArtistType | null, stageName?: string | null, genres?: Array<MusicGenre> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, state: { __typename?: 'StateData', stateId: string, stateName: string }, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } | null };
 
 export type CompleteArtistOnboardingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -686,6 +721,20 @@ export type UserSignupVerificationQueryVariables = Exact<{
 
 
 export type UserSignupVerificationQuery = { __typename?: 'Query', userSignupVerification: boolean };
+
+export type AllPlacesQueryVariables = Exact<{
+  input: Scalars['String']['input'];
+}>;
+
+
+export type AllPlacesQuery = { __typename?: 'Query', getPlacesList: Array<{ __typename?: 'Places', placeId: string, displayName: string }> };
+
+export type PlaceDetailsQueryVariables = Exact<{
+  placeId: Scalars['String']['input'];
+}>;
+
+
+export type PlaceDetailsQuery = { __typename?: 'Query', getPlaceDetails?: { __typename?: 'PlaceDetail', latitude: number, longitude: number, city?: string | null, state?: string | null, address?: string | null, zipcode?: string | null } | null };
 
 
 export const ArtistLoginDocument = gql`
@@ -726,6 +775,10 @@ export const ArtistOnboardingDataDocument = gql`
       addressLine2
       city
       zipcode
+      state {
+        stateId
+        stateName
+      }
       coordinate {
         type
         coordinates
@@ -785,6 +838,26 @@ export const UserSignupVerificationDocument = gql`
   userSignupVerification(input: $input)
 }
     `;
+export const AllPlacesDocument = gql`
+    query AllPlaces($input: String!) {
+  getPlacesList(input: $input) {
+    placeId
+    displayName
+  }
+}
+    `;
+export const PlaceDetailsDocument = gql`
+    query PlaceDetails($placeId: String!) {
+  getPlaceDetails(placeId: $placeId) {
+    latitude
+    longitude
+    city
+    state
+    address
+    zipcode
+  }
+}
+    `;
 
 export type SdkFunctionWrapper = <T>(action: (requestHeaders?:Record<string, string>) => Promise<T>, operationName: string, operationType?: string, variables?: any) => Promise<T>;
 
@@ -822,6 +895,12 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     },
     userSignupVerification(variables: UserSignupVerificationQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserSignupVerificationQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserSignupVerificationQuery>({ document: UserSignupVerificationDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'userSignupVerification', 'query', variables);
+    },
+    AllPlaces(variables: AllPlacesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<AllPlacesQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<AllPlacesQuery>({ document: AllPlacesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'AllPlaces', 'query', variables);
+    },
+    PlaceDetails(variables: PlaceDetailsQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<PlaceDetailsQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<PlaceDetailsQuery>({ document: PlaceDetailsDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'PlaceDetails', 'query', variables);
     }
   };
 }

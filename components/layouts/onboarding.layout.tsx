@@ -216,16 +216,16 @@ const OnboardingLayout = ({ children }: Props) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex items-center justify-center p-4 lg:p-8">
-          <div className="w-full max-w-2xl h-full mx-auto">
+        <div className="flex-1 flex items-center justify-center p-3 lg:p-5 max-h-screen">
+          <div className="w-full h-full max-w-2xl  mx-auto">
             <AnimatePresence mode="wait">{children}</AnimatePresence>
           </div>
         </div>
 
         {/* Mobile Footer - Only visible on mobile */}
-        <div className="lg:hidden flex flex-col sm:flex-row justify-between items-center gap-2 px-4 py-2 border-t border-gray-200 bg-background">
+        <div className="lg:hidden flex flex-col sm:flex-row justify-between items-center gap-2 px-4 py-2 border-t border-white bg-background">
           <div className="text-xs text-gray-500 order-2 sm:order-1">
-            HOIZR TECHNOLOGIES PRIVATE LIMITED
+            Hoizr Technologies Private Limited
           </div>
           <button
             onClick={() => {

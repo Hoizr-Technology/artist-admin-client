@@ -31,6 +31,10 @@ query artistOnboardingData {
       addressLine2
       city
       zipcode
+      state {
+        stateId
+        stateName
+      }
       coordinate {
         type
         coordinates
@@ -54,7 +58,6 @@ query artistOnboardingData {
     }
   }
 }
-
 query completeArtistOnboarding {
   completeArtistOnboarding
 }
