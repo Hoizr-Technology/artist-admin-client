@@ -14,7 +14,7 @@ export const Toast: FC<ToastProps> = ({ message, type }) => {
     switch (type) {
       case "success":
         return {
-          container: "text-white bg-primary",
+          container: "text-black bg-primary",
           icon: "bg-white text-greenNeon",
           iconPath: (
             <svg

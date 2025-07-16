@@ -1,5 +1,5 @@
 import MainLayout from "@/components/layouts/mainBodyLayout";
-import { UserStatus } from "@/generated/graphql";
+import { ProfileStatus, UserStatus } from "@/generated/graphql";
 import useGlobalStore from "@/store/global";
 import useUserStore from "@/store/user";
 import { redirectPathFromStatus } from "@/utils/functions/redirectPathFromStatus";
@@ -63,36 +63,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const response = await sdk.MeCheckUser(
+    const response = await sdk.meCheckArtist(
       {},
       {
         cookie: context.req.headers.cookie?.toString() ?? "",
       }
     );
+    const status = response.meArtist.status ?? ProfileStatus.Blocked;
+    let redirectResult = redirectPathFromStatus(status);
 
-    if (!response.meUser) {
-      return {
-        redirect: {
-          destination: "/login",
-          permanent: false,
-        },
-      };
-    }
-
-    if (response.meUser.status === UserStatus.OnboardingPending) {
-      return {
-        redirect: {
-          destination: "/onboarding/artist/about-us",
-          permanent: false,
-        },
-      };
-    }
-
-    const { status } = response.meUser;
-
-    let redirectResult = redirectPathFromStatus(status, false);
-
-    if (status === UserStatus.Active) {
+    if (status === ProfileStatus.Active) {
       return {
         props: {
           repo: {

@@ -151,7 +151,7 @@ export type Artist = {
   rejectionReason?: Maybe<Scalars['String']['output']>;
   socialLinks?: Maybe<SocialLinks>;
   stageName?: Maybe<Scalars['String']['output']>;
-  status?: Maybe<ArtistStatus>;
+  status?: Maybe<ProfileStatus>;
   testimonials?: Maybe<Array<Testimonial>>;
   updatedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   user?: Maybe<User>;
@@ -222,15 +222,6 @@ export type ArtistPortfolioInput = {
   type: PortfolioType;
   url: Scalars['String']['input'];
 };
-
-/** ArtistStatus type enum  */
-export enum ArtistStatus {
-  Active = 'active',
-  Blocked = 'blocked',
-  InternalVerificationPending = 'internalVerificationPending',
-  OnboardingPending = 'onboardingPending',
-  PaymentPending = 'paymentPending'
-}
 
 /** Type of artist (Dj, Band, or Solo Musician) */
 export enum ArtistType {
@@ -443,8 +434,11 @@ export type HostProfile = {
   hostName?: Maybe<Scalars['String']['output']>;
   isDiscoverable: Scalars['Boolean']['output'];
   logoUrl?: Maybe<Scalars['String']['output']>;
+  rejectedAt?: Maybe<Scalars['DateTimeISO']['output']>;
+  rejectedBy?: Maybe<Scalars['String']['output']>;
+  rejectionReason?: Maybe<Scalars['String']['output']>;
   socialLinks?: Maybe<SocialLinks>;
-  status?: Maybe<HostStatus>;
+  status?: Maybe<ProfileStatus>;
   totalBookingsMade?: Maybe<Scalars['Float']['output']>;
   totalEventsHosted?: Maybe<Scalars['Float']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
@@ -452,15 +446,6 @@ export type HostProfile = {
   venueType?: Maybe<VenueType>;
   websiteUrl?: Maybe<Scalars['String']['output']>;
 };
-
-/** HostStatus type enum  */
-export enum HostStatus {
-  Active = 'active',
-  Blocked = 'blocked',
-  InternalVerificationPending = 'internalVerificationPending',
-  OnboardingPending = 'onboardingPending',
-  PaymentPending = 'paymentPending'
-}
 
 export type HostUpdateApplicationStatusInput = {
   artistId: Scalars['String']['input'];
@@ -650,6 +635,14 @@ export enum PortfolioType {
   Video = 'VIDEO'
 }
 
+/** ProfileStatus type enum  */
+export enum ProfileStatus {
+  Active = 'active',
+  Blocked = 'blocked',
+  InternalVerificationPending = 'internalVerificationPending',
+  OnboardingPending = 'onboardingPending'
+}
+
 export type Query = {
   __typename?: 'Query';
   adminLogin: Scalars['String']['output'];
@@ -677,7 +670,9 @@ export type Query = {
   hostLogin: Scalars['String']['output'];
   hostLoginVerification: Scalars['Boolean']['output'];
   hostOnboardingData?: Maybe<HostProfile>;
+  meArtist: Artist;
   meContactDetails?: Maybe<ContactDetails>;
+  meHost: HostProfile;
   meUser?: Maybe<User>;
   userSignup: Scalars['String']['output'];
   userSignupVerification: Scalars['Boolean']['output'];
@@ -922,9 +917,7 @@ export type UserSignupVerificationInput = {
 /** UserStatus type enum  */
 export enum UserStatus {
   Active = 'active',
-  Blocked = 'blocked',
-  OnboardingPending = 'onboardingPending',
-  SubUserEmailVerificationPending = 'subUserEmailVerificationPending'
+  Blocked = 'blocked'
 }
 
 /** Type of user (artist, agency, or host) */
@@ -987,15 +980,20 @@ export type CompleteArtistOnboardingQueryVariables = Exact<{ [key: string]: neve
 
 export type CompleteArtistOnboardingQuery = { __typename?: 'Query', completeArtistOnboarding: boolean };
 
+export type MeArtistQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeArtistQuery = { __typename?: 'Query', meArtist: { __typename?: 'Artist', _id?: string | null, artistType?: ArtistType | null, stageName?: string | null, genres?: Array<MusicGenre> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, state: { __typename?: 'StateData', stateId: string, stateName: string }, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } };
+
+export type MeCheckArtistQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MeCheckArtistQuery = { __typename?: 'Query', meArtist: { __typename?: 'Artist', _id?: string | null, stageName?: string | null, status?: ProfileStatus | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null } };
+
 export type GetActiveStatesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetActiveStatesQuery = { __typename?: 'Query', getActiveStates: Array<{ __typename?: 'State', value: string, abbreviation?: string | null, _id: string }> };
-
-export type MeCheckUserQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type MeCheckUserQuery = { __typename?: 'Query', meUser?: { __typename?: 'User', _id: string, firstName: string, status: UserStatus, userType: UserType, isVerified: boolean } | null };
 
 export type UserSignupQueryVariables = Exact<{
   input: UserSignupInput;
@@ -1102,23 +1100,71 @@ export const CompleteArtistOnboardingDocument = gql`
   completeArtistOnboarding
 }
     `;
+export const MeArtistDocument = gql`
+    query meArtist {
+  meArtist {
+    _id
+    user {
+      firstName
+      lastName
+    }
+    artistType
+    stageName
+    genres
+    profilePicture
+    bio
+    address {
+      addressLine1
+      addressLine2
+      city
+      zipcode
+      state {
+        stateId
+        stateName
+      }
+      coordinate {
+        type
+        coordinates
+      }
+      place {
+        placeId
+        displayName
+      }
+    }
+    experience
+    hourRateCurrency
+    hourRate
+    websiteUrl
+    socialLinks {
+      instagram
+      soundcloud
+      spotify
+      youtube
+      mixcloud
+      bandcamp
+    }
+  }
+}
+    `;
+export const MeCheckArtistDocument = gql`
+    query meCheckArtist {
+  meArtist {
+    _id
+    user {
+      firstName
+      lastName
+    }
+    stageName
+    status
+  }
+}
+    `;
 export const GetActiveStatesDocument = gql`
     query getActiveStates {
   getActiveStates {
     value
     abbreviation
     _id
-  }
-}
-    `;
-export const MeCheckUserDocument = gql`
-    query MeCheckUser {
-  meUser {
-    _id
-    firstName
-    status
-    userType
-    isVerified
   }
 }
     `;
@@ -1195,11 +1241,14 @@ export function getSdk(client: GraphQLClient, withWrapper: SdkFunctionWrapper = 
     completeArtistOnboarding(variables?: CompleteArtistOnboardingQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<CompleteArtistOnboardingQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<CompleteArtistOnboardingQuery>({ document: CompleteArtistOnboardingDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'completeArtistOnboarding', 'query', variables);
     },
+    meArtist(variables?: MeArtistQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MeArtistQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MeArtistQuery>({ document: MeArtistDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'meArtist', 'query', variables);
+    },
+    meCheckArtist(variables?: MeCheckArtistQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MeCheckArtistQuery> {
+      return withWrapper((wrappedRequestHeaders) => client.request<MeCheckArtistQuery>({ document: MeCheckArtistDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'meCheckArtist', 'query', variables);
+    },
     getActiveStates(variables?: GetActiveStatesQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<GetActiveStatesQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<GetActiveStatesQuery>({ document: GetActiveStatesDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'getActiveStates', 'query', variables);
-    },
-    MeCheckUser(variables?: MeCheckUserQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<MeCheckUserQuery> {
-      return withWrapper((wrappedRequestHeaders) => client.request<MeCheckUserQuery>({ document: MeCheckUserDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'MeCheckUser', 'query', variables);
     },
     userSignup(variables: UserSignupQueryVariables, requestHeaders?: GraphQLClientRequestHeaders, signal?: RequestInit['signal']): Promise<UserSignupQuery> {
       return withWrapper((wrappedRequestHeaders) => client.request<UserSignupQuery>({ document: UserSignupDocument, variables, requestHeaders: { ...requestHeaders, ...wrappedRequestHeaders }, signal }), 'userSignup', 'query', variables);

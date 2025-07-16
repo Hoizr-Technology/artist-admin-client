@@ -86,8 +86,14 @@ const OnboardingPage = ({ repo }: HomePageProps) => {
           }
         : null
     );
-    setState(repo.address?.state ?? { stateId: "", stateName: "" });
-
+    setState(
+      repo.address?.state
+        ? {
+            id: repo.address?.state?.stateId,
+            value: repo.address.state?.stateName,
+          }
+        : { id: "", value: "" }
+    );
     // Step 6 - Experience & Rates
     setExperience(repo.experience || "");
     setHourRate(repo.hourRate || 0);

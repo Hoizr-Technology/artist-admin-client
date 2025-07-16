@@ -1,13 +1,3 @@
-query MeCheckUser {
-  meUser {
-    _id
-    firstName
-    status
-    userType
-    isVerified
-  }
-}
-
 query userSignup($input: UserSignupInput!) {
   userSignup(input: $input)
 }
