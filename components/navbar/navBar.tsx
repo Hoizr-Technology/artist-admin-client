@@ -61,7 +61,7 @@ const Navbar = () => {
                   !isMobile ? "mr-2" : ""
                 }`}
               >
-                <AvatarFallback className="rounded-xl text-white">
+                <AvatarFallback className="rounded-xl text-primary">
                   {`${firstName?.[0]}${lastName?.[0]}`}
                 </AvatarFallback>
               </Avatar>
@@ -85,7 +85,7 @@ const Navbar = () => {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-xl">
-                  <AvatarFallback className="rounded-xl bg-greenNeon text-white">
+                  <AvatarFallback className="rounded-xl bg-greenNeon text-black">
                     {`${firstName?.[0]}${lastName?.[0]}`}
                   </AvatarFallback>
                 </Avatar>
@@ -103,7 +103,7 @@ const Navbar = () => {
             <DropdownMenuItem asChild>
               <Link
                 href="/profile"
-                className="gap-2 p-2 cursor-pointer font-medium"
+                className="gap-2 p-2 hover:text-black  cursor-pointer font-medium"
               >
                 My account
               </Link>
@@ -111,17 +111,17 @@ const Navbar = () => {
 
             <DropdownMenuItem asChild>
               <Link
-                href="/restaurant-settings"
-                className="gap-2 p-2 cursor-pointer font-medium"
+                href="/artist-settings"
+                className="gap-2 p-2 hover:text-black cursor-pointer font-medium"
               >
-                Restaurant Settings
+                Settings
               </Link>
             </DropdownMenuItem>
 
             <DropdownMenuSeparator />
             <DropdownMenuItem
               onClick={handleLogout}
-              className="gap-2 p-2 text-red-600 hover:text-red-700 cursor-pointer font-semibold"
+              className="gap-2 p-2 text-red-600 !hover:text-red-700  cursor-pointer font-semibold"
             >
               <>
                 <LogOutIcon size={16} />

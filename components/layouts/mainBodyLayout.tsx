@@ -50,6 +50,7 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     setPhone,
     setStatus,
     setUserId,
+    setprofileId,
   } = useAuthStore();
   const { setToastData } = useGlobalStore();
 
@@ -81,12 +82,18 @@ const MainLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           lastName,
           status,
           email,
-          phone: phoneNumber ?? "", // ✅ fixed mapping
+          phone: phoneNumber ?? "",
           profileId,
-          authType,
           isVerified,
           userType,
         });
+        setUserId(_id);
+        setFirstName(firstName);
+        setLastName(lastName);
+        setStatus(status);
+        setEmail(email);
+        setPhone(phoneNumber ?? "");
+        setprofileId(profileId);
       }
     } catch (error) {
       setToastData({ message: extractErrorMessage(error), type: "error" });
