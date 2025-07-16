@@ -5,8 +5,6 @@ type MasterStates = {
   setMasterStates: (res: { value: string; label: string }[]) => void;
   timezonesOptions: any[];
   setMasterTimezones: (res: any) => void;
-  cuisinesOptions: { id: string; value: string }[];
-  setCuisinesOptions: (res: any) => void;
 };
 
 const useMasterStore = create<MasterStates>((set) => ({
@@ -14,8 +12,6 @@ const useMasterStore = create<MasterStates>((set) => ({
   setMasterStates: (res) => set({ statesOptions: res }),
   timezonesOptions: [],
   setMasterTimezones: (res) => set({ timezonesOptions: res }),
-  cuisinesOptions: [],
-  setCuisinesOptions: (res) => set({ cuisinesOptions: res }),
 }));
 
 export default useMasterStore;
