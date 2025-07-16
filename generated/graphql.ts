@@ -120,6 +120,14 @@ export type AgencyProfile = {
   websiteUrl?: Maybe<Scalars['String']['output']>;
 };
 
+/** Status of artist application or host offer */
+export enum ApplicationStatus {
+  Accepted = 'ACCEPTED',
+  Cancelled = 'CANCELLED',
+  Pending = 'PENDING',
+  Rejected = 'REJECTED'
+}
+
 export type Artist = {
   __typename?: 'Artist';
   _id?: Maybe<Scalars['ID']['output']>;
@@ -129,11 +137,13 @@ export type Artist = {
   bio?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTimeISO']['output']>;
   experience?: Maybe<ExperienceLevel>;
+  firstName: Scalars['String']['output'];
   genres?: Maybe<Array<MusicGenre>>;
   hoizrBookingUrl?: Maybe<Scalars['String']['output']>;
   hourRate?: Maybe<Scalars['Float']['output']>;
   hourRateCurrency?: Maybe<Currency>;
   isDiscoverable?: Maybe<Scalars['Boolean']['output']>;
+  lastName: Scalars['String']['output'];
   portfolio?: Maybe<Array<ArtistPortfolio>>;
   profilePicture?: Maybe<Scalars['String']['output']>;
   rejectedAt?: Maybe<Scalars['DateTimeISO']['output']>;
@@ -146,6 +156,25 @@ export type Artist = {
   updatedAt?: Maybe<Scalars['DateTimeISO']['output']>;
   user?: Maybe<User>;
   websiteUrl?: Maybe<Scalars['String']['output']>;
+};
+
+export type ArtistApplication = {
+  __typename?: 'ArtistApplication';
+  appliedAt: Scalars['DateTimeISO']['output'];
+  artist: Artist;
+  artistAddress?: Maybe<AddressInfo>;
+  artistGenres?: Maybe<Array<MusicGenre>>;
+  artistName?: Maybe<Scalars['String']['output']>;
+  artistProfilePicture?: Maybe<Scalars['String']['output']>;
+  artistSocialLinks?: Maybe<SocialLinks>;
+  artistStageName?: Maybe<Scalars['String']['output']>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: ApplicationStatus;
+};
+
+export type ArtistApplyToEventInput = {
+  eventId: Scalars['String']['input'];
+  message?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type ArtistLoginVerificationInput = {
@@ -210,6 +239,11 @@ export enum ArtistType {
   SoloMusician = 'SOLO_MUSICIAN'
 }
 
+export type ArtistUpdateInvitationStatusInput = {
+  eventId: Scalars['String']['input'];
+  status: Scalars['String']['input'];
+};
+
 /** Authentication method used by the user */
 export enum AuthType {
   MagicLink = 'MAGIC_LINK',
@@ -219,6 +253,17 @@ export enum AuthType {
 export type BlockUnblockArtistInput = {
   artistId: Scalars['ID']['input'];
   block: Scalars['Boolean']['input'];
+};
+
+export type BudgetRange = {
+  __typename?: 'BudgetRange';
+  max?: Maybe<Scalars['Float']['output']>;
+  min?: Maybe<Scalars['Float']['output']>;
+};
+
+export type BudgetRangeInput = {
+  max?: InputMaybe<Scalars['Float']['input']>;
+  min?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type Config = {
@@ -255,6 +300,12 @@ export type ContactDetails = {
   phoneNumber: Scalars['String']['output'];
 };
 
+export type CreateEventInput = {
+  email: Scalars['String']['input'];
+  otp?: InputMaybe<Scalars['String']['input']>;
+  otpId?: InputMaybe<Scalars['String']['input']>;
+};
+
 /** Supported currency codes for financial transactions */
 export enum Currency {
   Aud = 'AUD',
@@ -270,6 +321,43 @@ export enum Currency {
   Ngn = 'NGN',
   Usd = 'USD',
   Zar = 'ZAR'
+}
+
+export type Event = {
+  __typename?: 'Event';
+  _id: Scalars['ID']['output'];
+  artistApplications?: Maybe<Array<ArtistApplication>>;
+  budget?: Maybe<BudgetRange>;
+  createdAt: Scalars['DateTimeISO']['output'];
+  currency?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  endDate?: Maybe<Scalars['DateTimeISO']['output']>;
+  eventDate: Scalars['DateTimeISO']['output'];
+  eventType: EventType;
+  expectedAudience?: Maybe<Scalars['Float']['output']>;
+  genresPreferred?: Maybe<Array<MusicGenre>>;
+  host: HostProfile;
+  hostInvitations?: Maybe<Array<HostInvitation>>;
+  location: AddressInfo;
+  status: EventStatus;
+  title: Scalars['String']['output'];
+  updatedAt: Scalars['DateTimeISO']['output'];
+};
+
+/** Status of the event lifecycle */
+export enum EventStatus {
+  Active = 'ACTIVE',
+  Cancelled = 'CANCELLED',
+  Completed = 'COMPLETED',
+  Draft = 'DRAFT'
+}
+
+/** Type of the event visibility */
+export enum EventType {
+  InviteOnly = 'INVITE_ONLY',
+  Private = 'PRIVATE',
+  Public = 'PUBLIC',
+  Ticketed = 'TICKETED'
 }
 
 /** Indicates the artist's experience level */
@@ -296,6 +384,88 @@ export type FilterDataInput = {
   operation: FilterDataEnum;
   value?: InputMaybe<Scalars['String']['input']>;
   valueArr?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type HostInvitation = {
+  __typename?: 'HostInvitation';
+  artist: Artist;
+  artistAddress?: Maybe<AddressInfo>;
+  artistGenres?: Maybe<Array<MusicGenre>>;
+  artistName?: Maybe<Scalars['String']['output']>;
+  artistProfilePicture?: Maybe<Scalars['String']['output']>;
+  artistSocialLinks?: Maybe<SocialLinks>;
+  artistStageName?: Maybe<Scalars['String']['output']>;
+  invitedAt: Scalars['DateTimeISO']['output'];
+  note?: Maybe<Scalars['String']['output']>;
+  status: ApplicationStatus;
+};
+
+export type HostInviteArtistInput = {
+  artistId: Scalars['String']['input'];
+  eventId: Scalars['String']['input'];
+  note?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type HostLoginVerificationInput = {
+  email: Scalars['String']['input'];
+  otp: Scalars['String']['input'];
+  otpId: Scalars['String']['input'];
+};
+
+export type HostOnboardingInput = {
+  address?: InputMaybe<AddressInfoInput>;
+  averageEventSize?: InputMaybe<Scalars['Float']['input']>;
+  businessRegistrationNumber?: InputMaybe<Scalars['String']['input']>;
+  contactEmail?: InputMaybe<Scalars['String']['input']>;
+  contactPhone?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  frequentCities?: InputMaybe<Array<Scalars['String']['input']>>;
+  gstNumber?: InputMaybe<Scalars['String']['input']>;
+  hostName?: InputMaybe<Scalars['String']['input']>;
+  logoUrl?: InputMaybe<Scalars['String']['input']>;
+  socialLinks?: InputMaybe<SocialLinksInput>;
+  venueType?: InputMaybe<VenueType>;
+  websiteUrl?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type HostProfile = {
+  __typename?: 'HostProfile';
+  _id: Scalars['ID']['output'];
+  address?: Maybe<AddressInfo>;
+  averageEventSize?: Maybe<Scalars['Float']['output']>;
+  businessRegistrationNumber?: Maybe<Scalars['String']['output']>;
+  contactEmail?: Maybe<Scalars['String']['output']>;
+  contactPhone?: Maybe<Scalars['String']['output']>;
+  createdAt: Scalars['DateTimeISO']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  frequentCities?: Maybe<Array<Scalars['String']['output']>>;
+  gstNumber?: Maybe<Scalars['String']['output']>;
+  hostName?: Maybe<Scalars['String']['output']>;
+  isDiscoverable: Scalars['Boolean']['output'];
+  logoUrl?: Maybe<Scalars['String']['output']>;
+  socialLinks?: Maybe<SocialLinks>;
+  status?: Maybe<HostStatus>;
+  totalBookingsMade?: Maybe<Scalars['Float']['output']>;
+  totalEventsHosted?: Maybe<Scalars['Float']['output']>;
+  updatedAt: Scalars['DateTimeISO']['output'];
+  user: User;
+  venueType?: Maybe<VenueType>;
+  websiteUrl?: Maybe<Scalars['String']['output']>;
+};
+
+/** HostStatus type enum  */
+export enum HostStatus {
+  Active = 'active',
+  Blocked = 'blocked',
+  InternalVerificationPending = 'internalVerificationPending',
+  OnboardingPending = 'onboardingPending',
+  PaymentPending = 'paymentPending'
+}
+
+export type HostUpdateApplicationStatusInput = {
+  artistId: Scalars['String']['input'];
+  eventId: Scalars['String']['input'];
+  status: Scalars['String']['input'];
 };
 
 export type LocationCommon = {
@@ -333,12 +503,21 @@ export type Mutation = {
   addState: Scalars['Boolean']['output'];
   addTimezone: Scalars['Boolean']['output'];
   adminLogout: Scalars['Boolean']['output'];
+  applyToEvent: Scalars['Boolean']['output'];
   artistLogout: Scalars['Boolean']['output'];
   artistOnboarding: Scalars['Boolean']['output'];
+  artistUpdateInvitationStatus: Scalars['Boolean']['output'];
   blockUnblockArtist: Scalars['Boolean']['output'];
+  completeEventCreation: Scalars['Boolean']['output'];
+  createEventVerification: Scalars['String']['output'];
+  hostInviteArtist: Scalars['Boolean']['output'];
+  hostLogout: Scalars['Boolean']['output'];
+  hostOnboarding: Scalars['Boolean']['output'];
+  hostUpdateApplicationStatus: Scalars['Boolean']['output'];
   rejectArtist: Scalars['Boolean']['output'];
   tokensRefresh: Scalars['Boolean']['output'];
   updateConfig: Scalars['Boolean']['output'];
+  updateEvent: Scalars['Boolean']['output'];
   updateStateStatus: Scalars['Boolean']['output'];
   updateTimezoneStatus: Scalars['Boolean']['output'];
   verifyArtist: Scalars['Boolean']['output'];
@@ -360,13 +539,48 @@ export type MutationAddTimezoneArgs = {
 };
 
 
+export type MutationApplyToEventArgs = {
+  input: ArtistApplyToEventInput;
+};
+
+
 export type MutationArtistOnboardingArgs = {
   input: ArtistOnboardingInput;
 };
 
 
+export type MutationArtistUpdateInvitationStatusArgs = {
+  input: ArtistUpdateInvitationStatusInput;
+};
+
+
 export type MutationBlockUnblockArtistArgs = {
   input: BlockUnblockArtistInput;
+};
+
+
+export type MutationCompleteEventCreationArgs = {
+  eventId: Scalars['String']['input'];
+};
+
+
+export type MutationCreateEventVerificationArgs = {
+  input: CreateEventInput;
+};
+
+
+export type MutationHostInviteArtistArgs = {
+  input: HostInviteArtistInput;
+};
+
+
+export type MutationHostOnboardingArgs = {
+  input: HostOnboardingInput;
+};
+
+
+export type MutationHostUpdateApplicationStatusArgs = {
+  input: HostUpdateApplicationStatusInput;
 };
 
 
@@ -378,6 +592,12 @@ export type MutationRejectArtistArgs = {
 export type MutationUpdateConfigArgs = {
   id: Scalars['String']['input'];
   input: UpdateConfigInput;
+};
+
+
+export type MutationUpdateEventArgs = {
+  eventId: Scalars['String']['input'];
+  input: UpdateEventInput;
 };
 
 
@@ -439,14 +659,24 @@ export type Query = {
   artistLoginVerification: Scalars['Boolean']['output'];
   artistOnboardingData?: Maybe<Artist>;
   completeArtistOnboarding: Scalars['Boolean']['output'];
+  completeHostOnboarding: Scalars['Boolean']['output'];
+  createEvent: Scalars['String']['output'];
   getActiveStates: Array<State>;
   getActiveTimezones: Array<Timezone>;
   getAllConfigs: Array<Config>;
+  getAllEvents: Array<Event>;
   getAllStates: Array<State>;
   getAllTimezones: Array<Timezone>;
+  getArtistApplicationsForEvent: Array<ArtistApplication>;
   getConfig: Config;
+  getEventById?: Maybe<Event>;
+  getHostInvitationsForEvent: Array<HostInvitation>;
   getPlaceDetails?: Maybe<PlaceDetail>;
   getPlacesList: Array<Places>;
+  getPublicEvents: Array<Event>;
+  hostLogin: Scalars['String']['output'];
+  hostLoginVerification: Scalars['Boolean']['output'];
+  hostOnboardingData?: Maybe<HostProfile>;
   meContactDetails?: Maybe<ContactDetails>;
   meUser?: Maybe<User>;
   userSignup: Scalars['String']['output'];
@@ -481,8 +711,28 @@ export type QueryArtistLoginVerificationArgs = {
 };
 
 
+export type QueryCreateEventArgs = {
+  email: Scalars['String']['input'];
+};
+
+
+export type QueryGetArtistApplicationsForEventArgs = {
+  eventId: Scalars['String']['input'];
+};
+
+
 export type QueryGetConfigArgs = {
   type: ConfigTypeEnum;
+};
+
+
+export type QueryGetEventByIdArgs = {
+  eventId: Scalars['String']['input'];
+};
+
+
+export type QueryGetHostInvitationsForEventArgs = {
+  eventId: Scalars['String']['input'];
 };
 
 
@@ -493,6 +743,16 @@ export type QueryGetPlaceDetailsArgs = {
 
 export type QueryGetPlacesListArgs = {
   input: Scalars['String']['input'];
+};
+
+
+export type QueryHostLoginArgs = {
+  email: Scalars['String']['input'];
+};
+
+
+export type QueryHostLoginVerificationArgs = {
+  input: HostLoginVerificationInput;
 };
 
 
@@ -520,10 +780,12 @@ export enum RowsPerPageEnum {
 export type SocialLinks = {
   __typename?: 'SocialLinks';
   bandcamp?: Maybe<Scalars['String']['output']>;
+  facebook?: Maybe<Scalars['String']['output']>;
   instagram?: Maybe<Scalars['String']['output']>;
   mixcloud?: Maybe<Scalars['String']['output']>;
   soundcloud?: Maybe<Scalars['String']['output']>;
   spotify?: Maybe<Scalars['String']['output']>;
+  twitter?: Maybe<Scalars['String']['output']>;
   youtube?: Maybe<Scalars['String']['output']>;
 };
 
@@ -609,6 +871,19 @@ export type UpdateConfigInput = {
   valueType: ConfigValueEnum;
 };
 
+export type UpdateEventInput = {
+  budget?: InputMaybe<BudgetRangeInput>;
+  currency?: InputMaybe<Scalars['String']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  endDate?: InputMaybe<Scalars['DateTimeISO']['input']>;
+  eventDate?: InputMaybe<Scalars['DateTimeISO']['input']>;
+  eventType?: InputMaybe<EventType>;
+  expectedAudience?: InputMaybe<Scalars['Float']['input']>;
+  genresPreferred?: InputMaybe<Array<MusicGenre>>;
+  location?: InputMaybe<AddressInfoInput>;
+  title?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID']['output'];
@@ -657,6 +932,19 @@ export enum UserType {
   Agency = 'AGENCY',
   Artist = 'ARTIST',
   Host = 'HOST'
+}
+
+/** Type of venue for events */
+export enum VenueType {
+  Bar = 'BAR',
+  Club = 'CLUB',
+  ConcertHall = 'CONCERT_HALL',
+  Festival = 'FESTIVAL',
+  Hotel = 'HOTEL',
+  Lounge = 'LOUNGE',
+  Outdoor = 'OUTDOOR',
+  PrivateEvent = 'PRIVATE_EVENT',
+  Restaurant = 'RESTAURANT'
 }
 
 export type VerifyArtistInput = {
