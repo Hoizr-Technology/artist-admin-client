@@ -17,7 +17,6 @@ type MeUserData = {
   authType?: string;
   isVerified?: boolean;
   userType?: string;
-  role?: string;
 };
 
 type UserStoreState = {
