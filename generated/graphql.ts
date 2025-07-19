@@ -124,8 +124,10 @@ export type AgencyProfile = {
 export enum ApplicationStatus {
   Accepted = 'ACCEPTED',
   Cancelled = 'CANCELLED',
+  Expired = 'EXPIRED',
   Pending = 'PENDING',
-  Rejected = 'REJECTED'
+  Rejected = 'REJECTED',
+  Withdrawn = 'WITHDRAWN'
 }
 
 export type Artist = {
@@ -133,12 +135,12 @@ export type Artist = {
   _id?: Maybe<Scalars['ID']['output']>;
   address?: Maybe<AddressInfo>;
   agencyProfileId?: Maybe<AgencyProfile>;
-  artistType?: Maybe<ArtistType>;
+  artistType?: Maybe<Array<Maybe<ArtistType>>>;
   bio?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTimeISO']['output']>;
   experience?: Maybe<ExperienceLevel>;
   firstName: Scalars['String']['output'];
-  genres?: Maybe<Array<MusicGenre>>;
+  genres?: Maybe<Array<Genres>>;
   hoizrBookingUrl?: Maybe<Scalars['String']['output']>;
   hourRate?: Maybe<Scalars['Float']['output']>;
   hourRateCurrency?: Maybe<Currency>;
@@ -163,7 +165,7 @@ export type ArtistApplication = {
   appliedAt: Scalars['DateTimeISO']['output'];
   artist: Artist;
   artistAddress?: Maybe<AddressInfo>;
-  artistGenres?: Maybe<Array<MusicGenre>>;
+  artistGenres?: Maybe<Array<Genres>>;
   artistName?: Maybe<Scalars['String']['output']>;
   artistProfilePicture?: Maybe<Scalars['String']['output']>;
   artistSocialLinks?: Maybe<SocialLinks>;
@@ -185,10 +187,10 @@ export type ArtistLoginVerificationInput = {
 
 export type ArtistOnboardingInput = {
   address?: InputMaybe<AddressInfoInput>;
-  artistType?: InputMaybe<ArtistType>;
+  artistType?: InputMaybe<Array<ArtistType>>;
   bio?: InputMaybe<Scalars['String']['input']>;
   experience?: InputMaybe<ExperienceLevel>;
-  genres?: InputMaybe<Array<MusicGenre>>;
+  genres?: InputMaybe<Array<Genres>>;
   hourRate?: InputMaybe<Scalars['Float']['input']>;
   hourRateCurrency?: InputMaybe<Currency>;
   isDiscoverable?: InputMaybe<Scalars['Boolean']['input']>;
@@ -225,9 +227,20 @@ export type ArtistPortfolioInput = {
 
 /** Type of artist (Dj, Band, or Solo Musician) */
 export enum ArtistType {
+  Anchor = 'ANCHOR',
   Band = 'BAND',
+  Dancer = 'DANCER',
   Dj = 'DJ',
-  SoloMusician = 'SOLO_MUSICIAN'
+  Influencer = 'INFLUENCER',
+  LiveAct = 'LIVE_ACT',
+  Mc = 'MC',
+  Poet = 'POET',
+  Producer = 'PRODUCER',
+  SoloMusician = 'SOLO_MUSICIAN',
+  Speaker = 'SPEAKER',
+  StandUpComedian = 'STAND_UP_COMEDIAN',
+  TheaterArtist = 'THEATER_ARTIST',
+  Vj = 'VJ'
 }
 
 export type ArtistUpdateInvitationStatusInput = {
@@ -291,12 +304,6 @@ export type ContactDetails = {
   phoneNumber: Scalars['String']['output'];
 };
 
-export type CreateEventInput = {
-  email: Scalars['String']['input'];
-  otp?: InputMaybe<Scalars['String']['input']>;
-  otpId?: InputMaybe<Scalars['String']['input']>;
-};
-
 /** Supported currency codes for financial transactions */
 export enum Currency {
   Aud = 'AUD',
@@ -314,6 +321,16 @@ export enum Currency {
   Zar = 'ZAR'
 }
 
+export type DashboardMetric = {
+  __typename?: 'DashboardMetric';
+  change: Scalars['Float']['output'];
+  iconType: Scalars['String']['output'];
+  isCurrency?: Maybe<Scalars['Boolean']['output']>;
+  isPercentage?: Maybe<Scalars['Boolean']['output']>;
+  title: Scalars['String']['output'];
+  value: Scalars['Float']['output'];
+};
+
 export type Event = {
   __typename?: 'Event';
   _id: Scalars['ID']['output'];
@@ -323,16 +340,24 @@ export type Event = {
   currency?: Maybe<Scalars['String']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   endDate?: Maybe<Scalars['DateTimeISO']['output']>;
-  eventDate: Scalars['DateTimeISO']['output'];
-  eventType: EventType;
+  eventDate?: Maybe<Scalars['DateTimeISO']['output']>;
+  eventType?: Maybe<EventType>;
   expectedAudience?: Maybe<Scalars['Float']['output']>;
-  genresPreferred?: Maybe<Array<MusicGenre>>;
+  genresPreferred?: Maybe<Array<Genres>>;
   host: HostProfile;
   hostInvitations?: Maybe<Array<HostInvitation>>;
-  location: AddressInfo;
-  status: EventStatus;
-  title: Scalars['String']['output'];
+  listingComplete?: Maybe<Scalars['Boolean']['output']>;
+  location?: Maybe<AddressInfo>;
+  pictures?: Maybe<Array<Scalars['String']['output']>>;
+  status?: Maybe<EventStatus>;
+  title?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['DateTimeISO']['output'];
+};
+
+export type EventPaginatedResponse = {
+  __typename?: 'EventPaginatedResponse';
+  items: Array<Event>;
+  total: Scalars['Float']['output'];
 };
 
 /** Status of the event lifecycle */
@@ -377,11 +402,69 @@ export type FilterDataInput = {
   valueArr?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
+export type GenreTrend = {
+  __typename?: 'GenreTrend';
+  genre: Scalars['String']['output'];
+  percentage: Scalars['Float']['output'];
+};
+
+/** Various genres of music available for artist or event selection */
+export enum Genres {
+  Acapella = 'ACAPELLA',
+  AlternativeRock = 'ALTERNATIVE_ROCK',
+  Ambient = 'AMBIENT',
+  Blues = 'BLUES',
+  Bollywood = 'BOLLYWOOD',
+  Classical = 'CLASSICAL',
+  Comedy = 'COMEDY',
+  Country = 'COUNTRY',
+  DeepHouse = 'DEEP_HOUSE',
+  Disco = 'DISCO',
+  DrumAndBass = 'DRUM_AND_BASS',
+  Dubstep = 'DUBSTEP',
+  Edm = 'EDM',
+  Eighties = 'EIGHTIES',
+  Experimental = 'EXPERIMENTAL',
+  Folk = 'FOLK',
+  Funk = 'FUNK',
+  Fusion = 'FUSION',
+  HipHop = 'HIP_HOP',
+  House = 'HOUSE',
+  Instrumental = 'INSTRUMENTAL',
+  Jazz = 'JAZZ',
+  Karaoke = 'KARAOKE',
+  LiveOrchestra = 'LIVE_ORCHESTRA',
+  Local = 'LOCAL',
+  Lounge = 'LOUNGE',
+  Marathi = 'MARATHI',
+  Metal = 'METAL',
+  Nineties = 'NINETIES',
+  Other = 'OTHER',
+  Poetry = 'POETRY',
+  Pop = 'POP',
+  Punjabi = 'PUNJABI',
+  Rap = 'RAP',
+  Reggae = 'REGGAE',
+  Reggaeton = 'REGGAETON',
+  Remixes = 'REMIXES',
+  Rnb = 'RNB',
+  Rock = 'ROCK',
+  SpokenWord = 'SPOKEN_WORD',
+  Tamil = 'TAMIL',
+  Techno = 'TECHNO',
+  Telugu = 'TELUGU',
+  Top_40 = 'TOP_40',
+  Trance = 'TRANCE',
+  Trap = 'TRAP',
+  TwoThousands = 'TWO_THOUSANDS',
+  Vinyl = 'VINYL'
+}
+
 export type HostInvitation = {
   __typename?: 'HostInvitation';
   artist: Artist;
   artistAddress?: Maybe<AddressInfo>;
-  artistGenres?: Maybe<Array<MusicGenre>>;
+  artistGenres?: Maybe<Array<Genres>>;
   artistName?: Maybe<Scalars['String']['output']>;
   artistProfilePicture?: Maybe<Scalars['String']['output']>;
   artistSocialLinks?: Maybe<SocialLinks>;
@@ -463,25 +546,6 @@ export type LocationCommonInput = {
   coordinates: Array<Scalars['Float']['input']>;
 };
 
-/** Various genres of music available for artist or event selection */
-export enum MusicGenre {
-  Disco = 'DISCO',
-  Eighties = 'EIGHTIES',
-  HipHop = 'HIP_HOP',
-  House = 'HOUSE',
-  Local = 'LOCAL',
-  Lounge = 'LOUNGE',
-  Nineties = 'NINETIES',
-  Reggae = 'REGGAE',
-  Remixes = 'REMIXES',
-  Rnb = 'RNB',
-  Rock = 'ROCK',
-  Techno = 'TECHNO',
-  Top_40 = 'TOP_40',
-  TwoThousands = 'TWO_THOUSANDS',
-  Vinyl = 'VINYL'
-}
-
 export type Mutation = {
   __typename?: 'Mutation';
   addConfig: Scalars['Boolean']['output'];
@@ -494,7 +558,7 @@ export type Mutation = {
   artistUpdateInvitationStatus: Scalars['Boolean']['output'];
   blockUnblockArtist: Scalars['Boolean']['output'];
   completeEventCreation: Scalars['Boolean']['output'];
-  createEventVerification: Scalars['String']['output'];
+  createEvent: Scalars['String']['output'];
   hostInviteArtist: Scalars['Boolean']['output'];
   hostLogout: Scalars['Boolean']['output'];
   hostOnboarding: Scalars['Boolean']['output'];
@@ -502,7 +566,7 @@ export type Mutation = {
   rejectArtist: Scalars['Boolean']['output'];
   tokensRefresh: Scalars['Boolean']['output'];
   updateConfig: Scalars['Boolean']['output'];
-  updateEvent: Scalars['Boolean']['output'];
+  updateEvent: UpdateEventResponse;
   updateStateStatus: Scalars['Boolean']['output'];
   updateTimezoneStatus: Scalars['Boolean']['output'];
   verifyArtist: Scalars['Boolean']['output'];
@@ -546,11 +610,8 @@ export type MutationBlockUnblockArtistArgs = {
 
 export type MutationCompleteEventCreationArgs = {
   eventId: Scalars['String']['input'];
-};
-
-
-export type MutationCreateEventVerificationArgs = {
-  input: CreateEventInput;
+  otp: Scalars['String']['input'];
+  otpId: Scalars['String']['input'];
 };
 
 
@@ -583,6 +644,7 @@ export type MutationUpdateConfigArgs = {
 export type MutationUpdateEventArgs = {
   eventId: Scalars['String']['input'];
   input: UpdateEventInput;
+  isFinalStep?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
@@ -653,20 +715,26 @@ export type Query = {
   artistOnboardingData?: Maybe<Artist>;
   completeArtistOnboarding: Scalars['Boolean']['output'];
   completeHostOnboarding: Scalars['Boolean']['output'];
-  createEvent: Scalars['String']['output'];
   getActiveStates: Array<State>;
   getActiveTimezones: Array<Timezone>;
+  getAllArtists: ArtistPaginatedResponse;
   getAllConfigs: Array<Config>;
-  getAllEvents: Array<Event>;
+  getAllEvents: EventPaginatedResponse;
   getAllStates: Array<State>;
   getAllTimezones: Array<Timezone>;
   getArtistApplicationsForEvent: Array<ArtistApplication>;
   getConfig: Config;
+  getDashboardMetricsHost: Array<DashboardMetric>;
   getEventById?: Maybe<Event>;
+  getEventsTillNextWeek: Array<Event>;
   getHostInvitationsForEvent: Array<HostInvitation>;
+  getNearbyArtists: Array<Artist>;
+  getNearbyEvents: Array<Event>;
   getPlaceDetails?: Maybe<PlaceDetail>;
   getPlacesList: Array<Places>;
   getPublicEvents: Array<Event>;
+  getTrendingArtists: Array<Artist>;
+  getTrendsInsight: Array<GenreTrend>;
   hostLogin: Scalars['String']['output'];
   hostLoginVerification: Scalars['Boolean']['output'];
   hostOnboardingData?: Maybe<HostProfile>;
@@ -706,8 +774,19 @@ export type QueryArtistLoginVerificationArgs = {
 };
 
 
-export type QueryCreateEventArgs = {
-  email: Scalars['String']['input'];
+export type QueryGetAllArtistsArgs = {
+  filter?: InputMaybe<Array<FilterDataInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortDataInput>;
+};
+
+
+export type QueryGetAllEventsArgs = {
+  filter?: InputMaybe<Array<FilterDataInput>>;
+  pagination?: InputMaybe<PaginationInput>;
+  search?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<SortDataInput>;
 };
 
 
@@ -874,9 +953,16 @@ export type UpdateEventInput = {
   eventDate?: InputMaybe<Scalars['DateTimeISO']['input']>;
   eventType?: InputMaybe<EventType>;
   expectedAudience?: InputMaybe<Scalars['Float']['input']>;
-  genresPreferred?: InputMaybe<Array<MusicGenre>>;
+  genresPreferred?: InputMaybe<Array<Genres>>;
   location?: InputMaybe<AddressInfoInput>;
+  pictures?: InputMaybe<Array<Scalars['String']['input']>>;
   title?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateEventResponse = {
+  __typename?: 'UpdateEventResponse';
+  otpKey: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type User = {
@@ -973,7 +1059,7 @@ export type ArtistOnboardingMutation = { __typename?: 'Mutation', artistOnboardi
 export type ArtistOnboardingDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ArtistOnboardingDataQuery = { __typename?: 'Query', artistOnboardingData?: { __typename?: 'Artist', _id?: string | null, artistType?: ArtistType | null, stageName?: string | null, genres?: Array<MusicGenre> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, state: { __typename?: 'StateData', stateId: string, stateName: string }, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } | null };
+export type ArtistOnboardingDataQuery = { __typename?: 'Query', artistOnboardingData?: { __typename?: 'Artist', _id?: string | null, artistType?: Array<ArtistType | null> | null, stageName?: string | null, genres?: Array<Genres> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, state: { __typename?: 'StateData', stateId: string, stateName: string }, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } | null };
 
 export type CompleteArtistOnboardingQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -983,7 +1069,7 @@ export type CompleteArtistOnboardingQuery = { __typename?: 'Query', completeArti
 export type MeArtistQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type MeArtistQuery = { __typename?: 'Query', meArtist: { __typename?: 'Artist', _id?: string | null, artistType?: ArtistType | null, stageName?: string | null, genres?: Array<MusicGenre> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, state: { __typename?: 'StateData', stateId: string, stateName: string }, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } };
+export type MeArtistQuery = { __typename?: 'Query', meArtist: { __typename?: 'Artist', _id?: string | null, artistType?: Array<ArtistType | null> | null, stageName?: string | null, genres?: Array<Genres> | null, profilePicture?: string | null, bio?: string | null, experience?: ExperienceLevel | null, hourRateCurrency?: Currency | null, hourRate?: number | null, websiteUrl?: string | null, status?: ProfileStatus | null, user?: { __typename?: 'User', firstName: string, lastName: string } | null, address?: { __typename?: 'AddressInfo', addressLine1: string, addressLine2?: string | null, city: string, zipcode: number, state: { __typename?: 'StateData', stateId: string, stateName: string }, coordinate?: { __typename?: 'LocationCommon', type?: string | null, coordinates: Array<number> } | null, place?: { __typename?: 'Places', placeId: string, displayName: string } | null } | null, socialLinks?: { __typename?: 'SocialLinks', instagram?: string | null, soundcloud?: string | null, spotify?: string | null, youtube?: string | null, mixcloud?: string | null, bandcamp?: string | null } | null } };
 
 export type MeCheckArtistQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1135,6 +1221,7 @@ export const MeArtistDocument = gql`
     hourRateCurrency
     hourRate
     websiteUrl
+    status
     socialLinks {
       instagram
       soundcloud

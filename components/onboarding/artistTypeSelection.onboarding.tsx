@@ -1,71 +1,66 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import { FiHeadphones, FiUser, FiUsers } from "react-icons/fi";
-import { ArtistType } from "@/generated/graphql";
+import { useState, useEffect, useRef } from "react";
 import { sdk } from "@/utils/graphqlClient";
 import useGlobalStore from "@/store/global";
-import useOnboardingStore from "@/store/onboarding"; // Import the onboarding store
+import useOnboardingStore from "@/store/onboarding";
 import { useRouter } from "next/router";
 import { extractErrorMessage } from "@/utils/functions/common";
 import CButton from "../common/buttons/button";
 import { ButtonType } from "../common/buttons/interface";
+import { ArtistType } from "@/generated/graphql";
+import { artistTypes } from "@/utils/enums/artistType.enum";
+// import artistTypes from above
 
-const artistTypes = [
-  {
-    type: ArtistType.Band,
-    label: "Band",
-    icon: <FiUsers className="h-10 w-10" />,
-    description: "Group of musicians performing together",
-  },
-  {
-    type: ArtistType.Dj,
-    label: "DJ",
-    icon: <FiHeadphones className="h-10 w-10" />,
-    description: "Disc jockey mixing and playing recorded music",
-  },
-  {
-    type: ArtistType.SoloMusician,
-    label: "Solo Musician",
-    icon: <FiUser className="h-10 w-10" />,
-    description: "Individual artist performing alone",
-  },
-];
+const MAX_TYPES = 3;
+const MIN_TYPES = 1;
 
 const ArtistTypeSelection = () => {
   const { setToastData } = useGlobalStore();
   const router = useRouter();
   const [btnLoading, setBtnLoading] = useState(false);
 
-  // Get artistType from store and its setter
   const { artistType, setArtistType } = useOnboardingStore();
-
-  // Initialize local state with value from store
-  const [selectedType, setSelectedType] = useState<ArtistType | null>(
-    artistType as ArtistType
+  // Start with the list (or empty)
+  const [selectedTypes, setSelectedTypes] = useState<ArtistType[]>(
+    Array.isArray(artistType) ? artistType : artistType ? [artistType] : []
   );
 
-  // Update store whenever selectedType changes
+  // Sync store with local state
   useEffect(() => {
-    if (selectedType) {
-      setArtistType(selectedType);
+    setArtistType(selectedTypes);
+  }, [selectedTypes, setArtistType]);
+
+  // Toggle logic with limit
+  const toggleType = (type: ArtistType) => {
+    if (selectedTypes.includes(type)) {
+      setSelectedTypes((prev) => prev.filter((t) => t !== type));
+      return;
     }
-  }, [selectedType, setArtistType]);
+    if (selectedTypes.length >= MAX_TYPES) {
+      setToastData({
+        message: `You can select up to ${MAX_TYPES} artist types.`,
+        type: "warning",
+      });
+      return;
+    }
+    setSelectedTypes((prev) => [...prev, type]);
+  };
 
   const handleSubmit = async () => {
-    if (!selectedType) {
+    if (selectedTypes.length < MIN_TYPES) {
       setToastData({
-        message: "Please select an artist type",
+        message: `Please select at least ${MIN_TYPES} artist type${
+          MIN_TYPES > 1 ? "s" : ""
+        }`,
         type: "error",
       });
       return;
     }
-
     try {
       setBtnLoading(true);
       await sdk.artistOnboarding({
-        input: { artistType: selectedType },
+        input: { artistType: selectedTypes },
       });
-
       router.push("/onboarding/artist/profile-setup");
     } catch (error) {
       const errorMessage = extractErrorMessage(error);
@@ -78,51 +73,124 @@ const ArtistTypeSelection = () => {
     }
   };
 
+  // You can tweak height as you wish (320-400px fits most use cases).
   return (
     <motion.div
-      className=" w-full mb-auto min-h-full sm:px-12 max-w-3xl flex flex-col justify-between bg-transparent  items-center space-y-6 text-center relative"
+      className="w-full mb-auto min-h-full sm:px-4 max-w-3xl flex flex-col justify-between bg-transparent items-center text-center relative py-6"
       variants={{
         hidden: { opacity: 0, scale: 0.95 },
-        show: {
-          opacity: 1,
-          scale: 1,
-          transition: { staggerChildren: 0.2 },
-        },
+        show: { opacity: 1, scale: 1, transition: { staggerChildren: 0.2 } },
       }}
       initial="hidden"
       animate="show"
       exit="hidden"
       transition={{ duration: 0.3, type: "spring" }}
     >
-      <h1 className="text-3xl text-primary sm:text-4xl font-bold leading-tight mb-6">
-        What Type of Artist are You?
-      </h1>
-      <div className="w-full  rounded-xl shadow-sm p-6 bg-surface ">
-        <div className="space-y-6 p-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {artistTypes.map((typeInfo) => (
-              <div
-                key={typeInfo.type}
-                className={`border rounded-lg p-6 cursor-pointer transition-colors ${
-                  selectedType === typeInfo.type
-                    ? "border-primary ring-2 ring-primary ring-opacity-50"
-                    : "border-gray-300 hover:border-gray-400"
-                }`}
-                onClick={() => setSelectedType(typeInfo.type)}
-              >
-                <div className="flex flex-col items-center">
-                  <div className="text-primary mb-2">{typeInfo.icon}</div>
-                  <h3 className="text-lg font-medium">{typeInfo.label}</h3>
-                  <p className="text-sm text-gray-500 mt-2">
-                    {typeInfo.description}
-                  </p>
-                </div>
-              </div>
-            ))}
+      {/* ========== Modern Heading ========== */}
+      <div className="w-full">
+        <h1 className="text-2xl sm:text-3xl text-primary font-bold leading-tight mb-2">
+          What Type of Artist Are You?
+        </h1>
+        <p className="max-w-xl mx-auto text-white/60 mb-5 text-sm">
+          Pick all roles you perform in. This helps HOIZR match you to the
+          perfect gigs and clubs.
+        </p>
+      </div>
+      <div className="w-full rounded-xl shadow-sm p-4 bg-surface flex flex-col gap-2">
+        {/* Card Grid, scrollable */}
+        <div
+          className="overflow-y-auto custom-scrollbar px-2"
+          style={{ maxHeight: 400, minHeight: 210 }}
+        >
+          <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 pb-2">
+            {artistTypes.map((typeInfo) => {
+              const IconComponent = typeInfo.icon;
+              const isSelected = selectedTypes.includes(typeInfo.type);
+              const limitReached =
+                selectedTypes.length >= MAX_TYPES && !isSelected;
+              return (
+                <button
+                  key={typeInfo.type}
+                  type="button"
+                  disabled={limitReached}
+                  className={`
+                  relative group cursor-pointer transition-all duration-300 transform hover:scale-105 
+                  ${limitReached ? "opacity-40 pointer-events-none" : ""}
+                `}
+                  onClick={() => toggleType(typeInfo.type)}
+                >
+                  {/* Glass effect overlay */}
+                  <div
+                    className={`absolute inset-0  ${
+                      isSelected ? "bg-primary/40" : "bg-primary/5"
+                    } backdrop-blur-sm rounded-2xl`}
+                  />
+
+                  {/* Content */}
+                  <div className="relative p-4 flex flex-col items-center justify-center ">
+                    <div
+                      className={`
+                      p-3 rounded-full bg-primary/10 backdrop-blur-sm mb-3 
+                      transition-all duration-300 group-hover:bg-primary/30
+                      ${isSelected ? "bg-primary/90 scale-110" : ""}
+                    `}
+                    >
+                      <IconComponent
+                        className={`w-6 h-6 text-white transition-transform duration-300 ${
+                          isSelected ? "scale-110" : ""
+                        }`}
+                      />
+                    </div>
+                    <h3 className="text-white font-semibold text-sm text-center leading-tight">
+                      {typeInfo.label}
+                    </h3>
+                    {/* Selection indicator */}
+                    {isSelected && (
+                      <div className="absolute top-2 right-2 w-3 h-3 bg-white rounded-full animate-pulse" />
+                    )}
+                  </div>
+                  {/* Hover glow effect */}
+                  <div
+                    className={`
+                    absolute inset-0 bg-gradient-to-br from-primary/60 to-primary/80 rounded-2xl opacity-0 
+                    group-hover:opacity-20 transition-opacity duration-300 blur-xl
+                  `}
+                  />
+                </button>
+              );
+            })}
           </div>
         </div>
+        {/* Fake scrollbar style */}
+        <style>
+          {`
+            .custom-scrollbar::-webkit-scrollbar { width: 8px; }
+            .custom-scrollbar::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+            .custom-scrollbar { scrollbar-width: thin; scrollbar-color: #333 #23272a; }
+          `}
+        </style>
+        {/* Selected tags */}
+        {selectedTypes.length > 0 && (
+          <div className="mt-3 text-left">
+            <div className="font-semibold text-white mb-1 text-xs">
+              Selected Artist Types ({selectedTypes.length}/{MAX_TYPES})
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedTypes.map((type) => {
+                const info = artistTypes.find((t) => t.type === type);
+                return (
+                  <span
+                    key={type}
+                    className="px-2 py-1 bg-white/20 backdrop-blur-sm rounded-full text-white text-xs"
+                  >
+                    {info?.label}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
-
       <div className="w-full flex justify-between space-x-6">
         <CButton
           loading={btnLoading}

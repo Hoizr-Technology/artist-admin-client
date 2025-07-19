@@ -551,14 +551,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   }
 
   try {
-    const response = await sdk.MeCheckUser(
+    const response = await sdk.meCheckArtist(
       {},
       {
         cookie: context.req.headers.cookie?.toString() ?? "",
       }
     );
 
-    if (response && response.meUser) {
+    if (response && response.meArtist) {
       return {
         redirect: {
           destination: "/dashboard",

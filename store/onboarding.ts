@@ -1,11 +1,12 @@
+import { ArtistType, Genres } from "@/generated/graphql";
 import { create } from "zustand";
 
 type OnboardingStates = {
   // STEP 1 - User Info (no state needed, just display)
 
   // STEP 2 - Artist Type
-  artistType: string;
-  setArtistType: (e: string) => void;
+  artistType: ArtistType[] | null;
+  setArtistType: (e: ArtistType[]) => void;
 
   // STEP 3 - Stage Name, Bio, Profile Picture
   stageName: string;
@@ -16,8 +17,8 @@ type OnboardingStates = {
   setProfilePicture: (e: string) => void;
 
   // STEP 4 - Genres
-  genres: string[];
-  setGenres: (e: string[]) => void;
+  genres: Genres[];
+  setGenres: (e: Genres[]) => void;
 
   // STEP 5 - Address
   addressLine1: string;
@@ -68,8 +69,8 @@ type OnboardingStates = {
 
 const useOnboardingStore = create<OnboardingStates>((set) => ({
   // STEP 2 - Artist Type
-  artistType: "",
-  setArtistType: (e: string) => set({ artistType: e }),
+  artistType: null,
+  setArtistType: (e: ArtistType[]) => set({ artistType: e }),
 
   // STEP 3 - Stage Name, Bio, Profile Picture
   stageName: "",
@@ -81,7 +82,7 @@ const useOnboardingStore = create<OnboardingStates>((set) => ({
 
   // STEP 4 - Genres
   genres: [],
-  setGenres: (e: string[]) => set({ genres: e }),
+  setGenres: (e: Genres[]) => set({ genres: e }),
 
   // STEP 5 - Address
   addressLine1: "",

@@ -36,10 +36,6 @@ const Dashboard: NextPageWithLayout = ({ repo }: { repo?: UserRepo }) => {
     return <Loader />;
   }
 
-  if (!repo.hasAccess) {
-    return "You do not have access to this page";
-  }
-
   return <div>Hi</div>;
 };
 
@@ -72,7 +68,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const status = response.meArtist.status ?? ProfileStatus.Blocked;
     let redirectResult = redirectPathFromStatus(status);
 
-    if (status === ProfileStatus.Active) {
+    if (
+      status === ProfileStatus.Active ||
+      ProfileStatus.InternalVerificationPending
+    ) {
       return {
         props: {
           repo: {
@@ -84,7 +83,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     return redirectResult;
   } catch (error) {
-    // console.error("Failed to fetch user details:", error);
     return {
       redirect: {
         destination: "/login",

@@ -215,7 +215,7 @@ const ArtistLocation = () => {
               <AsyncSelect
                 id="location"
                 {...register("location", { required: "Location is required" })}
-                className="mt-1 text-sm rounded-xl w-full focus:outline-none text-left"
+                className="mt-1 text-sm rounded-xl w-full focus:outline-none text-left bg-surface"
                 classNamePrefix="react-select"
                 placeholder="Search location"
                 value={selectedPlace}
